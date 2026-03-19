@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MAX OCEAN GASTRO</title>
+
+    <!-- SDK мессенджера MAX / Telegram WebApp -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #2E4554;
+            --navy-light: #3F5A69;
+            --beige: #E8E5E1;
+            --gold: #c5a059;
+            --white: #FFFFFF;
+            --text-dark: #2E4554;
+            --serif: 'Playfair Display', serif;
+            --sans: 'Montserrat', sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--navy);
+            color: var(--white);
+            font-family: var(--sans);
+            overflow: hidden;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .container {
+            height: calc(100vh - 75px);
+            overflow-y: auto;
+            padding: 0 15px;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .serif { font-family: var(--serif); }
+
+        .brand-header {
+            text-align: center;
+            padding: 25px 0 10px;
+        }
+
+        .brand-header h1 {
+            font-family: var(--serif);
+            font-size: 24px;
+            margin: 0;
+            letter-spacing: 3px;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+
+        .brand-header span { color: var(--gold); }
+
+        .cats-sticky {
+            position: sticky;
+            top: 0;
+            background: var(--navy);
+            z-index: 100;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .cats-list {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px 15px;
+            scrollbar-width: none;
+        }
+
+        .cat-btn {
+            white-space: nowrap;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--white);
+            opacity: 0.4;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .cat-btn.active {
+            opacity: 1;
+            color: var(--gold);
+            background: rgba(197, 160, 89, 0.15);
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-bottom: 100px;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: var(--beige);
+            border-radius: 20px;
+            padding: 10px;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .p-img {
+            width: 100%;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            background: #ddd;
+        }
+
+        .p-name {
+            font-family: var(--serif);
+            font-size: 13px;
+            font-weight: 600;
+            height: 32px;
+            overflow: hidden;
+            line-height: 1.2;
+            margin-bottom: 5px;
+        }
+
+        .p-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .add-btn {
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-radius: 25px 25px 0 0;
+            z-index: 1000;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.3);
+        }
+
+        .nav-item {
+            color: var(--navy);
+            text-align: center;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            opacity: 0.4;
+            position: relative;
+        }
+
+        .nav-item.active {
+            opacity: 1;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .nav-item svg {
+            display: block;
+            margin: 0 auto 4px;
+            width: 22px;
+            height: 22px;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--gold);
+            color: var(--navy);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            background: var(--beige);
+            padding: 12px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            align-items: center;
+        }
+
+        .cart-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .cart-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--navy);
+            background: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .profile-card {
+            background: var(--navy-light);
+            border-radius: 30px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--navy);
+            font-family: var(--serif);
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .status-badge {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: rgba(197, 160, 89, 0.1);
+            color: var(--gold);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .checkout-form {
+            margin-top: 30px;
+            padding-bottom: 120px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            font-family: var(--sans);
+        }
+
+        .btn-order-final {
+            width: 100%;
+            padding: 20px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: 18px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 16px;
+            background: rgba(197, 160, 89, 0.12);
+            color: var(--gold);
+            border: 1px solid rgba(197, 160, 89, 0.25);
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 12px;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin: 24px 0 12px;
+            font-family: var(--serif);
+        }
+
+        .history-wrap {
+            padding-bottom: 120px;
+        }
+
+        .history-card {
+            background: var(--beige);
+            color: var(--text-dark);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .history-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .history-id {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .history-date {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .history-total {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-top: 8px;
+        }
+
+        .history-status {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(46, 69, 84, 0.08);
+            color: var(--navy);
+        }
+
+        .admin-panel {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .muted-text {
+            opacity: 0.6;
+            font-size: 13px;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- МАГАЗИН -->
+        <div id="shop-view" class="view active">
+            <div class="brand-header"><h1>MAX OCEAN<span>GASTRO</span></h1></div>
+            <div class="cats-sticky"><div class="cats-list" id="cat-nav"></div></div>
+            <div class="grid" id="product-grid"></div>
+        </div>
+
+        <!-- КОРЗИНА -->
+        <div id="cart-view" class="view">
+            <h2 class="serif" style="font-size: 30px; margin: 20px 0;">Ваш заказ</h2>
+            <div id="cart-list"></div>
+            <div id="cart-empty" style="text-align: center; margin-top: 80px; opacity: 0.5;">Корзина пуста</div>
+
+            <div id="checkout-block" style="display: none;" class="checkout-form">
+                <h3 class="serif">Детали доставки</h3>
+                <input type="tel" id="f-phone" placeholder="Телефон: +7...">
+                <input type="text" id="f-address" placeholder="Адрес: Город, улица, дом">
+                <button class="btn-order-final" onclick="finalizeOrder()">Оформить в MAX</button>
+            </div>
+        </div>
+
+        <!-- ПРОФИЛЬ -->
+        <div id="profile-view" class="view">
+            <h2 class="serif" style="font-size: 30px; margin: 20px 0;">MAX ID</h2>
+            <div class="profile-card">
+                <div class="avatar" id="avatar">?</div>
+                <div id="user-name" class="serif" style="font-size: 24px;">MAX Клиент</div>
+                <div id="user-id" style="opacity: 0.6; font-size: 13px; margin-top: 5px;">@username</div>
+                <div class="status-badge" id="user-status">MAX Premium Guest</div>
+                <div class="muted-text" id="user-extra"></div>
+            </div>
+
+            <div id="admin-panel" class="admin-panel" style="display:none;">
+                <h3 class="section-title">Администрирование</h3>
+                <button class="secondary-btn" onclick="exportOrdersCSV(false)">Выгрузить CSV на устройство</button>
+                <button class="secondary-btn" onclick="exportOrdersCSV(true)">Отправить CSV администратору в бот</button>
+                <div class="muted-text">Доступно только для администратора Mini App.</div>
+            </div>
+
+            <div class="history-wrap">
+                <h3 class="section-title">История заказов</h3>
+                <div id="orders-history-empty" style="opacity:0.5; margin-top: 15px;">У вас пока нет заказов</div>
+                <div id="orders-history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('shop-view', this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Меню
+        </div>
+        <div class="nav-item" onclick="switchTab('cart-view', this)">
+            <div class="badge" id="cart-badge">0</div>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>Заказ
+        </div>
+        <div class="nav-item" onclick="switchTab('profile-view', this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>MAX ID
+        </div>
+    </nav>
+
+    <script>
+        // --- КОНФИГУРАЦИЯ ---
+        // СЮДА ВСТАВЬ ТОКЕН БОТА
+        const MAX_TOKEN = "8455966464:AAHQx2KGwa-9g9ZCsC0CAFNwYbj7W8lhnyA";
+
+        // chat_id администратора, куда будут отправляться заказы и CSV
+        const ADMIN_ID = "6917224815";
+
+        // user id администратора внутри mini app, чтобы открыть админ-функции
+        const ADMIN_USER_ID = "6917224815";
+
+        const STORAGE_CART_KEY = "max_final_cart";
+        const STORAGE_ORDERS_KEY = "max_orders_registry";
+        const STORAGE_USERS_KEY = "max_users_registry";
+
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+
+        if (tg) {
+            try { tg.expand(); } catch (e) {}
+            try { tg.ready(); } catch (e) {}
+        }
+
+        const PRODUCTS = [
+            { id: 1, cat: "Рыба", name: "Тунец Вьетнам стейк", price: 490, img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300" },
+            { id: 2, cat: "Рыба", name: "Форель Карелия стейк", price: 1190, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300" },
+            { id: 3, cat: "Рыба", name: "Семга Чили стейк", price: 1750, img: "https://images.unsplash.com/photo-1544070282-3915272ef411?w=300" },
+            { id: 4, cat: "Рыба", name: "Дорадо Турция", price: 1030, img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300" },
+            { id: 5, cat: "Рыба", name: "Сибас Турция", price: 1050, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300" },
+            { id: 6, cat: "Рыба", name: "Скумбрия Атлантика", price: 630, img: "https://images.unsplash.com/photo-1544070282-3915272ef411?w=300" },
+            { id: 7, cat: "Рыба", name: "Форель Карелия 2-3кг", price: 1050, img: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=300" },
+            { id: 8, cat: "Рыба", name: "Морская Форель 2-3кг", price: 1200, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300" },
+            { id: 9, cat: "Морепродукты", name: "Креветка Королевская", price: 790, img: "https://images.unsplash.com/photo-1559742811-822873691df8?w=300" },
+            { id: 10, cat: "Морепродукты", name: "Филе кальмара 1кг", price: 790, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 11, cat: "Морепродукты", name: "Морской коктейль", price: 430, img: "https://images.unsplash.com/photo-1559742811-822873691df8?w=300" },
+            { id: 12, cat: "Морепродукты", name: "Креветка Арктида", price: 1196, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 13, cat: "Морепродукты", name: "Мясо мидий 1кг", price: 351, img: "https://images.unsplash.com/photo-1559742811-822873691df8?w=300" },
+            { id: 14, cat: "Морепродукты", name: "Ваннамей 2кг", price: 1690, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 15, cat: "Морепродукты", name: "Северная креветка", price: 1650, img: "https://images.unsplash.com/photo-1559742811-822873691df8?w=300" },
+            { id: 16, cat: "Морепродукты", name: "Мясо краба 500г", price: 2200, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 17, cat: "Морепродукты", name: "Лангустины L2", price: 1500, img: "https://images.unsplash.com/photo-1559742811-822873691df8?w=300" },
+            { id: 18, cat: "Морепродукты", name: "Филе гребешка", price: 1190, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 19, cat: "Икра", name: "Икра форели 250г", price: 1690, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 20, cat: "Икра", name: "Икра кеты 200г", price: 1430, img: "https://images.unsplash.com/photo-1580552834319-0357639a037b?w=300" },
+            { id: 21, cat: "Икра", name: "Икра нерки 200г", price: 1430, img: "https://images.unsplash.com/photo-1580552834319-0357639a037b?w=300" },
+            { id: 22, cat: "Филе/Фарш", name: "Тилапия филе", price: 496, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300" },
+            { id: 23, cat: "Филе/Фарш", name: "Горбуша фарш 400г", price: 209, img: "https://images.unsplash.com/photo-1544070282-3915272ef411?w=300" },
+            { id: 24, cat: "Филе/Фарш", name: "Семга фарш 400г", price: 403, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300" },
+            { id: 25, cat: "Филе/Фарш", name: "Лосось Трим С", price: 1910, img: "https://images.unsplash.com/photo-1544070282-3915272ef411?w=300" },
+            { id: 26, cat: "Полуфабрикаты", name: "Кольца кальмара", price: 690, img: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=300" },
+            { id: 27, cat: "Полуфабрикаты", name: "Котлеты кальмара", price: 390, img: "https://images.unsplash.com/photo-1534604973900-c41ab4c9d3ba?w=300" },
+            { id: 28, cat: "Полуфабрикаты", name: "Наггетсы трески", price: 409, img: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=300" },
+            { id: 29, cat: "Фастфуд", name: "Пицца Пепперони", price: 275, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300" },
+            { id: 30, cat: "Фастфуд", name: "Картофель фри 1кг", price: 931, img: "https://images.unsplash.com/photo-1518013030457-0471d7d91dfc?w=300" },
+            { id: 31, cat: "Фастфуд", name: "Сырные палочки", price: 690, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300" },
+            { id: 32, cat: "Овощи", name: "Брокколи 1кг", price: 290, img: "https://images.unsplash.com/photo-1584270354949-c26b0d5b4a0c?w=300" },
+            { id: 33, cat: "Овощи", name: "Мексиканская смесь", price: 260, img: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300" },
+            { id: 34, cat: "Масло", name: "Масло 82.5% 500г", price: 679, img: "https://images.unsplash.com/photo-1589985270826-4b7bb135bc9d?w=300" },
+            { id: 35, cat: "Слабая соль", name: "Лосось филе кусок", price: 189, img: "https://images.unsplash.com/photo-1551248429-40975aa4de74?w=300" },
+            { id: 36, cat: "Слабая соль", name: "Скумбрия в масле", price: 549, img: "https://images.unsplash.com/photo-1544070282-3915272ef411?w=300" }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem(STORAGE_CART_KEY)) || [];
+        let currentCat = "Все";
+        let currentUser = null;
+
+        function safeHaptic(type = 'medium') {
+            try {
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.impactOccurred(type);
+            } catch (e) {}
+        }
+
+        function safeSelection() {
+            try {
+                if (tg && tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+            } catch (e) {}
+        }
+
+        function showAlert(message) {
+            if (tg && tg.showAlert) return tg.showAlert(message);
+            alert(message);
+        }
+
+        function showConfirm(message, callback) {
+            if (tg && tg.showConfirm) return tg.showConfirm(message, callback);
+            const ok = confirm(message);
+            callback(ok);
+        }
+
+        function getUserFromWebApp() {
+            const rawUser = tg && tg.initDataUnsafe ? tg.initDataUnsafe.user : null;
+
+            if (rawUser) {
+                return {
+                    id: String(rawUser.id || "guest"),
+                    first_name: rawUser.first_name || "MAX",
+                    last_name: rawUser.last_name || "",
+                    username: rawUser.username || "",
+                    photo_url: rawUser.photo_url || "",
+                    language_code: rawUser.language_code || "ru"
+                };
+            }
+
+            return {
+                id: "guest_local",
+                first_name: "MAX",
+                last_name: "Клиент",
+                username: "guest",
+                photo_url: "",
+                language_code: "ru"
+            };
+        }
+
+        function getUserDisplayName(user) {
+            return [user.first_name, user.last_name].filter(Boolean).join(" ").trim() || "MAX Клиент";
+        }
+
+        function getUserTag(user) {
+            return user.username ? "@" + user.username : "id" + user.id;
+        }
+
+        function getUserStorageKey(userId) {
+            return `max_orders_user_${userId}`;
+        }
+
+        function saveUserProfile(user) {
+            const users = JSON.parse(localStorage.getItem(STORAGE_USERS_KEY)) || {};
+            users[user.id] = {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                username: user.username,
+                photo_url: user.photo_url,
+                language_code: user.language_code,
+                last_seen_at: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+        }
+
+        function getAllOrders() {
+            return JSON.parse(localStorage.getItem(STORAGE_ORDERS_KEY)) || [];
+        }
+
+        function setAllOrders(orders) {
+            localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(orders));
+        }
+
+        function getUserOrders(userId) {
+            return JSON.parse(localStorage.getItem(getUserStorageKey(userId))) || [];
+        }
+
+        function setUserOrders(userId, orders) {
+            localStorage.setItem(getUserStorageKey(userId), JSON.stringify(orders));
+        }
+
+        function generateOrderId() {
+            const part1 = Date.now().toString(36).toUpperCase();
+            const part2 = Math.random().toString(36).slice(2, 6).toUpperCase();
+            return `MAX-${part1}-${part2}`;
+        }
+
+        function formatDate(dateString) {
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return dateString;
+            return d.toLocaleString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHTML(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function escapeCSV(value) {
+            const str = String(value ?? '');
+            return `"${str.replace(/"/g, '""')}"`;
+        }
+
+        function renderProfile() {
+            const user = currentUser;
+            if (!user) return;
+
+            const userNameEl = document.getElementById('user-name');
+            const userIdEl = document.getElementById('user-id');
+            const avatarEl = document.getElementById('avatar');
+            const statusEl = document.getElementById('user-status');
+            const extraEl = document.getElementById('user-extra');
+
+            userNameEl.innerText = getUserDisplayName(user);
+            userIdEl.innerText = getUserTag(user);
+
+            if (user.photo_url) {
+                avatarEl.innerHTML = `<img src="${escapeHTML(user.photo_url)}" alt="avatar">`;
+            } else {
+                avatarEl.textContent = (user.first_name || "?").charAt(0).toUpperCase();
+            }
+
+            statusEl.innerText = isAdminUser() ? "MAX Admin Access" : "MAX Premium Guest";
+            extraEl.innerText = `Профиль подключен к Mini App. ID: ${user.id}`;
+
+            document.getElementById('admin-panel').style.display = isAdminUser() ? 'block' : 'none';
+        }
+
+        function renderCats() {
+            const cats = ["Все", ...new Set(PRODUCTS.map(p => p.cat))];
+            document.getElementById('cat-nav').innerHTML = cats.map(c => `
+                <div class="cat-btn ${c === currentCat ? 'active' : ''}" onclick="setCat('${String(c).replace(/'/g, "\\'")}')">${c}</div>
+            `).join('');
+        }
+
+        function setCat(c) {
+            currentCat = c;
+            renderCats();
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const filtered = currentCat === "Все" ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentCat);
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="card">
+                    <img src="${escapeHTML(p.img)}" class="p-img" loading="lazy" alt="${escapeHTML(p.name)}">
+                    <div class="p-name serif">${escapeHTML(p.name)}</div>
+                    <div class="p-price">${p.price} ₽</div>
+                    <button class="add-btn" onclick="addToCart(${p.id})">В корзину</button>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            if (!p) return;
+
+            const item = cart.find(x => x.id === id);
+            if (item) item.qty++;
+            else cart.push({ ...p, qty: 1 });
+
+            safeHaptic('medium');
+            updateCartUI();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(x => x.id === id);
+            if (!item) return;
+
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(x => x.id !== id);
+            }
+
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(cart));
+
+            const list = document.getElementById('cart-list');
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+
+            const badge = document.getElementById('cart-badge');
+            badge.innerText = count;
+            badge.style.display = count > 0 ? 'block' : 'none';
+
+            if (cart.length > 0) {
+                document.getElementById('cart-empty').style.display = 'none';
+                document.getElementById('checkout-block').style.display = 'block';
+
+                list.innerHTML = cart.map(i => `
+                    <div class="cart-item">
+                        <img src="${escapeHTML(i.img)}" class="cart-img" alt="${escapeHTML(i.name)}">
+                        <div class="cart-info" style="flex:1;">
+                            <h4 class="serif" style="margin:0 0 6px;">${escapeHTML(i.name)}</h4>
+                            <div style="font-weight:600;">${i.price} ₽</div>
+                        </div>
+                        <div class="cart-ctrl">
+                            <button class="qty-btn" onclick="changeQty(${i.id}, -1)">-</button>
+                            <span style="font-weight:600;">${i.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${i.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                if (tg && tg.MainButton) {
+                    try {
+                        tg.MainButton.setText(`ПОДТВЕРДИТЬ ЗАКАЗ (${total} ₽)`);
+                        tg.MainButton.show();
+                        if (tg.MainButton.offClick) tg.MainButton.offClick(finalizeOrder);
+                        tg.MainButton.onClick(finalizeOrder);
+                    } catch (e) {}
+                }
+            } else {
+                document.getElementById('cart-empty').style.display = 'block';
+                document.getElementById('checkout-block').style.display = 'none';
+                list.innerHTML = '';
+
+                if (tg && tg.MainButton) {
+                    try {
+                        if (tg.MainButton.offClick) tg.MainButton.offClick(finalizeOrder);
+                        tg.MainButton.hide();
+                    } catch (e) {}
+                }
+            }
+        }
+
+        function saveOrderLocally(order) {
+            const userOrders = getUserOrders(order.user.id);
+            userOrders.unshift(order);
+            setUserOrders(order.user.id, userOrders);
+
+            const allOrders = getAllOrders();
+            allOrders.unshift(order);
+            setAllOrders(allOrders);
+        }
+
+        function renderOrderHistory() {
+            if (!currentUser) return;
+
+            const orders = getUserOrders(currentUser.id);
+            const list = document.getElementById('orders-history-list');
+            const empty = document.getElementById('orders-history-empty');
+
+            if (!orders.length) {
+                empty.style.display = 'block';
+                list.innerHTML = '';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = orders.map(order => `
+                <div class="history-card">
+                    <div class="history-top">
+                        <div>
+                            <div class="history-id">${escapeHTML(order.order_id)}</div>
+                            <div class="history-date">${formatDate(order.created_at)}</div>
+                        </div>
+                        <div class="history-total">${order.total} ₽</div>
+                    </div>
+                    <div style="font-size:12px; line-height:1.5;">
+                        ${order.items.map(i => `• ${escapeHTML(i.name)} x ${i.qty}`).join('<br>')}
+                    </div>
+                    <div class="history-status">${escapeHTML(order.status_text || 'Отправлен')}</div>
+                </div>
+            `).join('');
+        }
+
+        function buildTelegramMessage(order) {
+            const itemsStr = order.items
+                .map(i => `• ${i.name} (${i.qty} шт) - ${i.price * i.qty}₽`)
+                .join('\n');
+
+            const userLine = `${order.user.first_name}${order.user.last_name ? ' ' + order.user.last_name : ''}`;
+            const userTag = order.user.username ? '@' + order.user.username : 'id' + order.user.id;
+
+            return [
+                `🚢 *НОВЫЙ ЗАКАЗ MAX*`,
+                ``,
+                `🆔 Заказ: *${order.order_id}*`,
+                `👤 Клиент: ${userLine} (${userTag})`,
+                `📞 Тел: ${order.phone}`,
+                `📍 Адрес: ${order.address}`,
+                `🕒 Дата: ${formatDate(order.created_at)}`,
+                ``,
+                `🛒 *Состав заказа:*`,
+                `${itemsStr}`,
+                ``,
+                `💰 *ИТОГО: ${order.total} ₽*`
+            ].join('\n');
+        }
+
+        async function sendMessageToAdmin(order) {
+            const message = buildTelegramMessage(order);
+
+            const url = `https://api.telegram.org/bot${MAX_TOKEN}/sendMessage`;
+            const payload = {
+                chat_id: ADMIN_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            };
+
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            return res.ok;
+        }
+
+        function buildOrderObject(phone, address) {
+            const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+
+            return {
+                order_id: generateOrderId(),
+                created_at: new Date().toISOString(),
+                phone: phone.trim(),
+                address: address.trim(),
+                total,
+                status: 'sent_to_admin',
+                status_text: 'Отправлен',
+                user: {
+                    id: currentUser.id,
+                    first_name: currentUser.first_name,
+                    last_name: currentUser.last_name,
+                    username: currentUser.username,
+                    photo_url: currentUser.photo_url
+                },
+                items: cart.map(i => ({
+                    id: i.id,
+                    cat: i.cat,
+                    name: i.name,
+                    price: i.price,
+                    qty: i.qty,
+                    img: i.img
+                }))
+            };
+        }
+
+        function buildOrdersCSV() {
+            const orders = getAllOrders();
+
+            const header = [
+                'order_id',
+                'created_at',
+                'user_id',
+                'first_name',
+                'last_name',
+                'username',
+                'phone',
+                'address',
+                'item_id',
+                'category',
+                'item_name',
+                'price',
+                'qty',
+                'line_total',
+                'order_total',
+                'status'
+            ];
+
+            const rows = [header.join(',')];
+
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    rows.push([
+                        escapeCSV(order.order_id),
+                        escapeCSV(order.created_at),
+                        escapeCSV(order.user.id),
+                        escapeCSV(order.user.first_name),
+                        escapeCSV(order.user.last_name),
+                        escapeCSV(order.user.username),
+                        escapeCSV(order.phone),
+                        escapeCSV(order.address),
+                        escapeCSV(item.id),
+                        escapeCSV(item.cat),
+                        escapeCSV(item.name),
+                        escapeCSV(item.price),
+                        escapeCSV(item.qty),
+                        escapeCSV(item.price * item.qty),
+                        escapeCSV(order.total),
+                        escapeCSV(order.status_text || order.status)
+                    ].join(','));
+                });
+            });
+
+            return rows.join('\n');
+        }
+
+        async function sendCSVToAdmin(blob, filename) {
+            const formData = new FormData();
+            formData.append('chat_id', ADMIN_ID);
+            formData.append('caption', `CSV выгрузка заказов MAX от ${formatDate(new Date().toISOString())}`);
+            formData.append('document', blob, filename);
+
+            const url = `https://api.telegram.org/bot${MAX_TOKEN}/sendDocument`;
+            const res = await fetch(url, {
+                method: 'POST',
+                body: formData
+            });
+
+            return res.ok;
+        }
+
+        function downloadCSVFile(csvContent, filename) {
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            return blob;
+        }
+
+        async function exportOrdersCSV(sendToBot = false) {
+            if (!isAdminUser()) {
+                return showAlert("Доступ разрешён только администратору");
+            }
+
+            const orders = getAllOrders();
+            if (!orders.length) {
+                return showAlert("Нет данных для выгрузки");
+            }
+
+            const csv = buildOrdersCSV();
+            const filename = `max_orders_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+            if (sendToBot) {
+                try {
+                    const ok = await sendCSVToAdmin(blob, filename);
+                    if (ok) {
+                        showAlert("CSV успешно отправлен администратору в бот");
+                    } else {
+                        showAlert("Не удалось отправить CSV в бот");
+                    }
+                } catch (e) {
+                    showAlert("Ошибка отправки CSV");
+                }
+                return;
+            }
+
+            downloadCSVFile(csv, filename);
+        }
+
+        async function finalizeOrder() {
+            const phone = document.getElementById('f-phone').value;
+            const address = document.getElementById('f-address').value;
+
+            if (!phone || !address) {
+                return showAlert("Укажите телефон и адрес для связи");
+            }
+
+            if (!cart.length) {
+                return showAlert("Корзина пуста");
+            }
+
+            const order = buildOrderObject(phone, address);
+
+            try {
+                // 1. отправляем сообщение о заказе
+                const orderSent = await sendMessageToAdmin(order);
+                if (!orderSent) {
+                    return showAlert("Не удалось отправить заказ администратору");
+                }
+
+                // 2. сохраняем заказ локально
+                saveOrderLocally(order);
+                renderOrderHistory();
+
+                // 3. формируем и отправляем CSV админу
+                const csv = buildOrdersCSV();
+                const filename = `max_orders_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-')}.csv`;
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+
+                const csvSent = await sendCSVToAdmin(blob, filename);
+                if (!csvSent) {
+                    return showAlert("Заказ отправлен, но CSV отправить не удалось");
+                }
+
+                // 4. успех
+                showConfirm("Заказ и CSV успешно отправлены администратору MAX. Очистить корзину?", (ok) => {
+                    if (ok) {
+                        cart = [];
+                        localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(cart));
+                        document.getElementById('f-phone').value = phone;
+                        document.getElementById('f-address').value = address;
+                        updateCartUI();
+                        switchTab('shop-view', document.querySelector('.nav-item'));
+                    }
+                });
+            } catch (e) {
+                showAlert("Ошибка связи с сервером MAX");
+            }
+        }
+
+        function switchTab(id, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            const target = document.getElementById(id);
+            if (target) target.classList.add('active');
+            if (el) el.classList.add('active');
+
+            if (id === 'profile-view') {
+                renderProfile();
+                renderOrderHistory();
+            }
+
+            safeSelection();
+        }
+
+        function isAdminUser() {
+            return currentUser && String(currentUser.id) === String(ADMIN_USER_ID);
+        }
+
+        function preloadCheckoutData() {
+            if (!currentUser) return;
+
+            const orders = getUserOrders(currentUser.id);
+            if (orders.length) {
+                const lastOrder = orders[0];
+                if (lastOrder.phone) document.getElementById('f-phone').value = lastOrder.phone;
+                if (lastOrder.address) document.getElementById('f-address').value = lastOrder.address;
+            }
+        }
+
+        function init() {
+            currentUser = getUserFromWebApp();
+            saveUserProfile(currentUser);
+
+            renderProfile();
+            renderCats();
+            renderProducts();
+            updateCartUI();
+            renderOrderHistory();
+            preloadCheckoutData();
+        }
+
+        init();
+    </script>
+</body>
+</html>

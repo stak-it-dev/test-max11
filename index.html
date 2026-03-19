@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Рыбная Точка</title>
+
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #2E4554;
+            --navy-light: #3F5A69;
+            --beige: #E8E5E1;
+            --gold: #c5a059;
+            --white: #FFFFFF;
+            --text-dark: #2E4554;
+            --serif: 'Playfair Display', serif;
+            --sans: 'Montserrat', sans-serif;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: var(--navy);
+            color: var(--white);
+            font-family: var(--sans);
+            overflow: hidden;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        .container {
+            height: calc(100vh - 75px);
+            overflow-y: auto;
+            padding: 0 15px;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .serif { font-family: var(--serif); }
+
+        .brand-header { text-align: center; padding: 25px 0 10px; }
+        .brand-header h1 {
+            font-family: var(--serif);
+            font-size: 24px;
+            margin: 0;
+            letter-spacing: 3px;
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+        .brand-header span { color: var(--gold); }
+
+        .hero-block {
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            height: 180px;
+            margin-bottom: 14px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .hero-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity .5s ease;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        .hero-slide::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(46,69,84,0.12) 0%, rgba(46,69,84,0.72) 100%);
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 85%;
+        }
+
+        .hero-title {
+            font-family: var(--serif);
+            font-size: 22px;
+            line-height: 1.15;
+            margin: 0 0 6px;
+        }
+
+        .hero-text {
+            font-size: 12px;
+            line-height: 1.4;
+            opacity: 0.95;
+        }
+
+        .hero-dots {
+            position: absolute;
+            right: 14px;
+            bottom: 14px;
+            display: flex;
+            gap: 6px;
+            z-index: 3;
+        }
+
+        .hero-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+        }
+
+        .hero-dot.active {
+            background: var(--gold);
+        }
+
+        .info-section {
+            background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.04) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 26px;
+            padding: 18px 16px;
+            margin-bottom: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.14);
+        }
+
+        .info-section h3 {
+            margin: 0 0 10px;
+            font-family: var(--serif);
+            font-size: 24px;
+            color: var(--white);
+        }
+
+        .info-section p,
+        .info-section li {
+            font-size: 12px;
+            line-height: 1.55;
+            opacity: 0.95;
+        }
+
+        .info-section ol {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        .cats-sticky {
+            position: sticky;
+            top: 0;
+            background: var(--navy);
+            z-index: 100;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .cats-list {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px 15px;
+            scrollbar-width: none;
+        }
+
+        .cat-btn {
+            white-space: nowrap;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--white);
+            opacity: 0.4;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: 0.3s;
+        }
+
+        .cat-btn.active {
+            opacity: 1;
+            color: var(--gold);
+            background: rgba(197, 160, 89, 0.15);
+            font-weight: 600;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-bottom: 100px;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: var(--beige);
+            border-radius: 20px;
+            padding: 10px;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            cursor: pointer;
+        }
+
+        .p-img-wrap {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 15px;
+            margin-bottom: 8px;
+            background: #ddd;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .p-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .p-placeholder {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 10px;
+            line-height: 1.4;
+            color: rgba(46,69,84,0.65);
+            background: linear-gradient(135deg, #ece9e4 0%, #dcd6ce 100%);
+        }
+
+        .p-name {
+            font-family: var(--serif);
+            font-size: 13px;
+            font-weight: 600;
+            min-height: 34px;
+            overflow: hidden;
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .p-pack {
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+            min-height: 22px;
+        }
+
+        .p-desc {
+            font-size: 10px;
+            line-height: 1.3;
+            opacity: 0.85;
+            min-height: 50px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            -webkit-box-orient: vertical;
+        }
+
+        .p-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .add-btn {
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 9px;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 75px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-radius: 25px 25px 0 0;
+            z-index: 1000;
+            box-shadow: 0 -5px 25px rgba(0,0,0,0.3);
+        }
+
+        .nav-item {
+            color: var(--navy);
+            text-align: center;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            opacity: 0.4;
+            position: relative;
+        }
+
+        .nav-item.active {
+            opacity: 1;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .nav-item svg {
+            display: block;
+            margin: 0 auto 4px;
+            width: 22px;
+            height: 22px;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--gold);
+            color: var(--navy);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 12px;
+            background: var(--beige);
+            padding: 12px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+            align-items: center;
+        }
+
+        .cart-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 10px;
+            object-fit: cover;
+            background: #ddd;
+        }
+
+        .cart-img-placeholder {
+            width: 55px;
+            height: 55px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ece9e4 0%, #dcd6ce 100%);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            font-size:9px;
+            color: rgba(46,69,84,0.6);
+            padding:4px;
+            box-sizing:border-box;
+        }
+
+        .cart-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--navy);
+            background: none;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .profile-card {
+            background: var(--navy-light);
+            border-radius: 30px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            color: var(--navy);
+            font-family: var(--serif);
+            overflow: hidden;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .status-badge {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 20px;
+            background: rgba(197, 160, 89, 0.1);
+            color: var(--gold);
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .checkout-form {
+            margin-top: 30px;
+            padding-bottom: 120px;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 15px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            font-family: var(--sans);
+        }
+
+        .btn-order-final {
+            width: 100%;
+            padding: 20px;
+            background: var(--gold);
+            color: var(--navy);
+            border: none;
+            border-radius: 18px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            padding: 16px;
+            background: rgba(197, 160, 89, 0.12);
+            color: var(--gold);
+            border: 1px solid rgba(197, 160, 89, 0.25);
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 12px;
+            box-sizing: border-box;
+        }
+
+        .section-title {
+            font-size: 24px;
+            margin: 24px 0 12px;
+            font-family: var(--serif);
+        }
+
+        .history-wrap {
+            padding-bottom: 120px;
+        }
+
+        .history-card, .ref-card {
+            background: var(--beige);
+            color: var(--text-dark);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .history-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .history-id {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--navy);
+        }
+
+        .history-date {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+
+        .history-total {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-top: 8px;
+        }
+
+        .history-status {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            background: rgba(46, 69, 84, 0.08);
+            color: var(--navy);
+        }
+
+        .bonus-box {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 22px;
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .bonus-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bonus-value {
+            font-size: 24px;
+            font-family: var(--serif);
+            color: var(--gold);
+        }
+
+        .bonus-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            opacity: .7;
+            letter-spacing: .6px;
+        }
+
+        .ref-link-box {
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 16px;
+            background: rgba(46,69,84,0.07);
+            word-break: break-all;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .ref-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .ref-mini {
+            background: rgba(46,69,84,0.07);
+            border-radius: 14px;
+            padding: 12px;
+        }
+
+        .ref-mini .v {
+            display:block;
+            font-size:18px;
+            font-weight:700;
+            color:var(--navy);
+            margin-top:4px;
+        }
+
+        .ref-mini .l {
+            font-size:10px;
+            text-transform:uppercase;
+            opacity:.65;
+        }
+
+        .toggle-bonus {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 18px;
+            padding: 12px 14px;
+            margin-top: 10px;
+            gap: 12px;
+        }
+
+        .toggle-bonus input {
+            width: auto;
+            margin: 0;
+            transform: scale(1.1);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 2000;
+            padding: 14px;
+            box-sizing: border-box;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-card {
+            width: 100%;
+            max-width: 520px;
+            max-height: 92vh;
+            overflow-y: auto;
+            background: var(--beige);
+            color: var(--text-dark);
+            border-radius: 28px;
+            padding: 14px;
+            box-sizing: border-box;
+        }
+
+        .modal-img-wrap {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border-radius: 18px;
+            overflow: hidden;
+            background: #ddd;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .modal-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .modal-close {
+            position: sticky;
+            top: 0;
+            margin-left: auto;
+            display: block;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(46,69,84,0.1);
+            color: var(--navy);
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 2;
+        }
+
+        .modal-title {
+            font-family: var(--serif);
+            font-size: 22px;
+            line-height: 1.2;
+            margin: 0 0 6px;
+        }
+
+        .modal-pack {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 700;
+            letter-spacing: .5px;
+            margin-bottom: 8px;
+        }
+
+        .modal-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            font-size: 13px;
+            line-height: 1.55;
+            margin-bottom: 12px;
+            white-space: pre-line;
+        }
+
+        .modal-kbju {
+            background: rgba(46,69,84,0.06);
+            border-radius: 16px;
+            padding: 12px;
+            font-size: 12px;
+            line-height: 1.5;
+            white-space: pre-line;
+            margin-bottom: 12px;
+        }
+
+        .view { display: none; }
+        .view.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="shop-view" class="view active">
+            <div class="brand-header"><h1>Рыбная <span>Точка</span></h1></div>
+
+            <div class="hero-block" id="hero-block"></div>
+
+            <div class="info-section">
+                <h3>О нас</h3>
+                <p>Мы искренне рады каждому участнику нашего сообщества.</p>
+                <ol>
+                    <li>Продукцию крупных и проверенных производителей по ценам ниже чем в магазинах и продукцию небольших семейных компаний, для которых репутация дороже денег.</li>
+                    <li>Наши цены ниже чем в привычных для вас магазинах. У нас заключены прямые договора поставок с производителями.</li>
+                    <li>Свежие сроки производства гарантированы тем что продукция закупается напрямую с заводов и под ваши заказы.</li>
+                </ol>
+                <p style="margin-top:10px;">Мы всегда открыты к вашим комментариям и обратной связи. Надеемся вам будем полезно и уютно с нами.</p>
+            </div>
+
+            <div class="cats-sticky"><div class="cats-list" id="cat-nav"></div></div>
+            <div class="grid" id="product-grid"></div>
+        </div>
+
+        <div id="cart-view" class="view">
+            <h2 class="serif" style="font-size: 30px; margin: 20px 0;">Ваш заказ</h2>
+            <div id="cart-list"></div>
+            <div id="cart-empty" style="text-align: center; margin-top: 80px; opacity: 0.5;">Корзина пуста</div>
+
+            <div id="bonus-toggle-wrap" style="display:none;">
+                <div class="toggle-bonus">
+                    <div>
+                        <div style="font-size:12px; font-weight:600;">Использовать бонусы</div>
+                        <div style="font-size:11px; opacity:.65;" id="bonus-help-text">Доступно 0 бонусных рублей</div>
+                    </div>
+                    <input type="checkbox" id="use-bonus-checkbox" onchange="updateCartUI()">
+                </div>
+            </div>
+
+            <div id="checkout-block" style="display: none;" class="checkout-form">
+                <h3 class="serif">Детали доставки</h3>
+                <input type="tel" id="f-phone" placeholder="Телефон: +7...">
+                <input type="text" id="f-address" placeholder="Адрес: Город, улица, дом">
+                <button class="btn-order-final" onclick="finalizeOrder()">Оформить заказ</button>
+            </div>
+        </div>
+
+        <div id="profile-view" class="view">
+            <h2 class="serif" style="font-size: 30px; margin: 20px 0;">Профиль</h2>
+            <div class="profile-card">
+                <div class="avatar" id="avatar">?</div>
+                <div id="user-name" class="serif" style="font-size: 24px;">MAX Клиент</div>
+                <div id="user-id" style="opacity: 0.6; font-size: 13px; margin-top: 5px;">@username</div>
+                <div class="status-badge" id="user-status">MAX Premium Guest</div>
+                <div class="muted-text" id="user-extra"></div>
+            </div>
+
+            <h3 class="section-title">Реферальная программа</h3>
+            <div class="bonus-box">
+                <div class="bonus-top">
+                    <div>
+                        <div class="bonus-label">Бонусный баланс</div>
+                        <div class="bonus-value" id="bonus-balance">0 ₽</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <div class="bonus-label">Ваш код</div>
+                        <div style="font-size:16px; font-weight:700; color:var(--gold);" id="ref-code">—</div>
+                    </div>
+                </div>
+                <div class="ref-link-box" id="ref-link-box">—</div>
+                <button class="secondary-btn" onclick="copyReferralLink()">Скопировать ссылку</button>
+                <button class="secondary-btn" onclick="shareReferralLink()">Поделиться ссылкой</button>
+                <div class="ref-row">
+                    <div class="ref-mini">
+                        <span class="l">Приглашено</span>
+                        <span class="v" id="ref-invited-count">0</span>
+                    </div>
+                    <div class="ref-mini">
+                        <span class="l">Начислено бонусов</span>
+                        <span class="v" id="ref-earned-total">0 ₽</span>
+                    </div>
+                </div>
+                <div class="muted-text" style="margin-top:12px;">
+                    Отправляй приглашение в магазин друзьям и знакомым и получай 3% от их первого заказа.
+                    1 бонусный рубль = 1 рубль. Бонусные рубли снижают стоимость Ваших покупок.
+                </div>
+            </div>
+
+            <div class="admin-panel">
+                <h3 class="section-title">Действия</h3>
+                <button class="secondary-btn" onclick="exportOrdersCSV()">Скачать CSV на устройство</button>
+                <button class="secondary-btn" onclick="sendCsvToAdmin()">Отправить CSV админу</button>
+            </div>
+
+            <div class="history-wrap">
+                <h3 class="section-title">История заказов</h3>
+                <div id="orders-history-empty" style="opacity:0.5; margin-top: 15px;">У вас пока нет заказов</div>
+                <div id="orders-history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="product-modal" onclick="closeProductModal(event)">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeProductModal(event)">×</button>
+            <div class="modal-img-wrap" id="modal-img-wrap"></div>
+            <div class="modal-title" id="modal-title"></div>
+            <div class="modal-pack" id="modal-pack"></div>
+            <div class="modal-price" id="modal-price"></div>
+            <div class="modal-text" id="modal-desc"></div>
+            <div class="modal-kbju" id="modal-kbju"></div>
+            <button class="btn-order-final" id="modal-add-btn">Добавить в корзину</button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('shop-view', this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Меню
+        </div>
+        <div class="nav-item" onclick="switchTab('cart-view', this)">
+            <div class="badge" id="cart-badge">0</div>
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>Заказ
+        </div>
+        <div class="nav-item" onclick="switchTab('profile-view', this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>Профиль
+        </div>
+    </nav>
+
+    <script>
+        const BACKEND_URL = "https://твой-backend-url";
+        const MINIAPP_PUBLIC_URL = "https://stak-it-dev.github.io/test-max11/";
+
+        const STORAGE_CART_KEY = "max_final_cart";
+        const STORAGE_ORDERS_KEY = "max_orders_registry";
+        const STORAGE_USERS_KEY = "max_users_registry";
+        const STORAGE_REF_KEY = "fish_point_ref_system_v1";
+        const REF_RATE = 0.03;
+
+        const app = window.WebApp || null;
+
+        if (app && typeof app.ready === "function") {
+            try { app.ready(); } catch (e) {}
+        }
+
+        const HERO_BANNERS = [
+            {
+                image: "banner-1.jpg",
+                title: "Свежая рыба и морепродукты",
+                text: "Прямые поставки, честные цены и удобный заказ в миниприложении."
+            },
+            {
+                image: "banner-2.jpg",
+                title: "Премиальное качество на каждый день",
+                text: "Продукция крупных производителей и семейных компаний с безупречной репутацией."
+            },
+            {
+                image: "banner-3.jpg",
+                title: "Заказывайте для дома и праздника",
+                text: "Стейки, икра, морепродукты, полуфабрикаты и деликатесы в одном каталоге."
+            }
+        ];
+
+        const PRODUCTS = [
+            {
+                        "id": 1,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Форель морская потрошеная, 2-3 кг (Инарктика)",
+                        "price": 1200,
+                        "pack": "От одной рыбы",
+                        "desc": "Производитель Инарктика (№1 в России по выращиванию форели и лосося). Высочайший стандарт качества и экологичности.\nКрупный калибр (2-3 кг) означает идеальный баланс жира и нежного мяса. Рекордное содержание Омега-3, витамина D, фосфора и селена.\nУкрепляет сердце, улучшает работу мозга, дарит здоровую кожу и заряжает энергией.\nПотрошеная, внутри чисто — минимум хлопот. Шоковая заморозка рыбы сразу после разделки = свежесть только что выловленной рыбки стоит на паузе до дефростации.",
+                        "kbju": "Калорийность: 190 ккал\n\nБелки: 20 г\n\nЖиры: 12 г\n\nУглеводы: 0 г",
+                        "image": "product-001.jpg"
+            },
+            {
+                        "id": 2,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Форель Карельская потрошенная, 2-3 кг (Инарктика)",
+                        "price": 1050,
+                        "pack": "От одной рыбы",
+                        "desc": "Производитель Инарктика — выращена в чистых пресных водах Карелии. Экологичное производство, высший стандарт качества.\n\nВ отличие от морской, карельская форель имеет более нежную и мягкую текстуру мяса, менее насыщенный жировой прослойкой, но при этом очень сочный и деликатный вкус. Калибр 2-3 кг — оптимальный для сочности и удобства приготовления.\nБогата витамином D, витаминами группы B, фосфором (для костей и мозга) и селеном. Содержит полезные жиры Омега-3, необходимые для здоровья сердца и сосудов.\nЛегкое усвоение, поддержка иммунитета и отличное настроение.\nПотрошеная — идеальна для запекания целиком, ухи или нежных стейков на пару. Шоковая заморозка сразу посл разделки рыбы гарантирует вам свежесть только что выловленной рыбы на вашем столе.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 150-160 ккал\n\nБелки: 20 г\n\nЖиры: 8 г\n\nУглеводы: 0 г",
+                        "image": "product-002.jpg"
+            },
+            {
+                        "id": 3,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Скумбрия атлантическая крупная неразделанная, 500+",
+                        "price": 630,
+                        "pack": "От двух рыб",
+                        "desc": "Промысел в открытых водах Атлантического океана, Фарерские острова. \nСкумбрия — жирная, плотная, ароматная. Калибр 500+ означает, что рыба нагуляла идеальный вес и жирок. В неразделанном виде она максимально сохраняет сочность при запекании и идеальна для домашнего копчения или гриля. Рекордсмен по содержанию жирных кислот Омега-3 (выше, чем у лосося!). Богата витамином D (особенно важным в пасмурные дни), витамином B12 и ценнейшим микроэлементом селеном.\nПоддержка сердца и сосудов, крепкий иммунитет, здоровая кожа и отличное настроение даже зимой. Атлантическая скумбрия отличается более высоким содержанием полезных жиров по сравнению с тихоокеанской. Это лучший выбор для тех, кто хочет получить максимум Омега-3 из доступной рыбы.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 190–200 ккал\n\nБелки: 18 г\n\nЖиры: 13–18 г (в зависимости от сезона вылова, осенью — максимальная жирность)\n\nУглеводы: 0 г",
+                        "image": "product-003.jpg"
+            },
+            {
+                        "id": 4,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Сибас 400-600 гр (Турция)",
+                        "price": 1050,
+                        "pack": "От двух рыб",
+                        "desc": "Премиальная белая рыба с нежнейшим, слегка сладковатым мясом и минимальным количеством костей. Калибр 400-600 гр — ресторанный стандарт для подачи целиком. В отличие от дикой, турецкая аквакультура гарантирует однородный вкус и отсутствие сезонных колебаний качества. Источник легкоусвояемого белка. Содержит жирные кислоты Омега-3, витамины A, D, E, K, группу В, а также фосфор, калий, йод, селен и железо. Полное отсутствие углеводов .\nПоддерживает сердечно-сосудистую систему, улучшает состояние кожи, волос и ногтей, рекомендован при анемии и диетическом питании. Быстро насыщает и легко усваивается",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 150–160 ккал\n\nБелки: 19–20 г\n\nЖиры: 7–8 г\n\nУглеводы: 0 г",
+                        "image": "product-004.jpg"
+            },
+            {
+                        "id": 5,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Дорадо 400-600 гр (Турция)",
+                        "price": 1030,
+                        "pack": "От двух рыб",
+                        "desc": "Дорадо — диетический продукт с оптимальным балансом белка и жира. Рыба с плотной белой мякотью и изысканным вкусом. Калибр 400-600 гр — идеальный вариант для запекания целиком: мясо остается сочным, а аромат — насыщенным. От сибаса отличается более нежной, но упругой текстурой и характерной сладостью во вкусе. Ценный источник легкоусвояемого белка. Содержит Омега-3 жирные кислоты, витамины A, D, E, группу В, а также йод, магний, кальций, фосфор и цинк. Идеально для детского и диетического питания благодаря низкой калорийности и отсутствию мелких костей.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 145–150 ккал\n\nБелки: 19–20 г\n\nЖиры: 6–7 г\n\nУглеводы: 0 г",
+                        "image": "product-005.jpg"
+            },
+            {
+                        "id": 6,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Семга стейк крупный 400 + (Чили)",
+                        "price": 1750,
+                        "pack": "от 1 кг",
+                        "desc": "Стейки семги от чилийского производителя — это стабильное качество круглый год. Отсутствие глазури (не более 3%) означает, что вы платите за вес рыбы, а не за воду. Настоящий ресторанный размер с толщиной среза 2,5-3 см. Идеально для сочных стейков на гриле, углях или в духовке. Благородная рыба для здорового рациона всей семьи.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 140 ккал\n\nБелки: 21.6 г\n\nЖиры: 6 г\n\nУглеводы: 0 г",
+                        "image": "product-006.jpg"
+            },
+            {
+                        "id": 7,
+                        "cat": "Рыба целая и стейки",
+                        "name": "Форель радужная стейк (Инарктика)",
+                        "price": 1290,
+                        "pack": "от 1 кг",
+                        "desc": "Инарктика — лидер российской аквакультуры. Выращена в чистых водах Карелии под строгим ветеринарным контролем. Готовые стейки из премиальной радужной форели — никаких хлопот с разделкой, только сочное мясо с нежной текстурой. В отличие от семги, эта форель содержит меньше калорий и жира, но сохраняет насыщенный вкус . Идеальна для быстрого ужина: на сковороду, в духовку или на гриль — и через 15 минут готово ресторанное блюдо. Шоковая заморозка сохраняет всю свежесть и сочность мяса.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 97–116 ккал \n\nБелки: 19–20 г \n\nЖиры: 2–4 г (зависит от сезона и кормления) \n\nУглеводы: 0 г",
+                        "image": "product-007.jpg"
+            },
+            {
+                        "id": 8,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Тунец медальоны 500 гр",
+                        "price": 490,
+                        "pack": "Упаковка 500 гр",
+                        "desc": "Желтоперый тунец — эталон диетического белка с минимальным содержанием жира. Вакуумная упаковка сохраняет всю свежесть и текстуру рыбы, а шоковая заморозка позволяет готовить медальоны без предварительной разморозки . Готовые медальоны без кожи и костей — никаких отходов, только чистое филе премиального качества. В упаковке 500 гр — 4 крупных медальона, идеальных для быстрого приготовления: на гриль, сковороду или в кунжутной обсыпке.  Низкокалорийный продукт для здорового питания и контроля веса .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 105–132 ккал \n\nБелки: 24–26 г \n\nЖиры: 1–4 г \n\nУглеводы: 0 г",
+                        "image": "product-008.jpg"
+            },
+            {
+                        "id": 9,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Медальоны из горбуши 400г Полар",
+                        "price": 523,
+                        "pack": "Упаковка 400 гр",
+                        "desc": "ТМ Polar. Продукт из дальневосточной горбуши, выловленной в дикой природе. Шоковая заморозка и вакуумная упаковка сохраняют свежесть и текстуру рыбы . Готовые медальоны из филе горбуши — никаких костей и хлопот с разделкой, только чистый белок и нежный вкус. Это не рыбный фарш с добавками, а спрессованное филе, которое сохраняет структуру рыбы . Идеально для быстрого ужина: на сковороду, в духовку или на пару — и через 10–15 минут готово. Дикая горбуша, в отличие от аквакультуры, не содержит антибиотиков и красителей. Идеально для детского и диетического питания.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 128–140 ккал\n\nБелки: 18–21 г\n\nЖиры: 5–6,5 г\n\nУглеводы: 0 г",
+                        "image": "product-009.jpg"
+            },
+            {
+                        "id": 10,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Хек филе в тубе",
+                        "price": 689,
+                        "pack": "от 1 кг",
+                        "desc": "Дикий хек (мерлуза). Добыча в чистых водах Тихого океана. Шоковая заморозка сохраняет всю свежесть и пользу . Это спрессованное и сформованное в виде колбасы (тубы) чистое филе хека — без кожи, костей и ледяной глазури . Удобный формат: нарезал медальоны и готовь. Идеально для рыбных котлет, фишбургеров, пельменей, пирогов, запеканок и начинок . Нежное белое мясо с минимальным количеством костей и отсутствием рыбного запаха",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 86–90 ккал \n\nБелки: 16 г \n\nЖиры: 2 г \n\nУглеводы: 0 г",
+                        "image": "product-010.jpg"
+            },
+            {
+                        "id": 11,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Палтус филе (кусочки мяса) порционное Полар",
+                        "price": 325,
+                        "pack": "Упаковка 400 гр",
+                        "desc": "ТМ Polar  Дикий палтус добыча в чистых водах Тихого океана. Филе нарезано порционными кусочками, вакуумная упаковка, глазурь не более 5% . Готовые порционные кусочки филе — никакой разделки, только чистое мясо. Палтус — рыба с нежным белым мясом, плотной текстурой и отсутствием специфического рыбного запаха . Готовится за считанные минуты: жарь, запекай, готовь на пару или в кляре. Удобный формат для быстрых ужинов.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 100 ккал \n\nБелки: 18 г \n\nЖиры: 3 г \n\nУглеводы: 0 г",
+                        "image": "product-011.jpg"
+            },
+            {
+                        "id": 12,
+                        "cat": "Морепродукты",
+                        "name": "Филе морского гребешка 40-60",
+                        "price": 1190,
+                        "pack": "Упаковка 1 кг",
+                        "desc": "Гребешок — редкий морепродукт, который сочетает рекордно низкую калорийность с высоким содержанием белка и насыщенным витаминным составом. Калибр 40-60 означает количество штук в килограмме — это гребешки среднего размера, идеальные для быстрого обжаривания и салатов. Нежнейшее мясо с кремовой текстурой и сладковатым, деликатным вкусом, который гурманы ценят наравне с лобстером. Готовится за 1-2 минуты: буквально «схватить» на горячей сковороде с обеих сторон — и готово ресторанное блюдо . Продукция шоковой заморозки, глазурь не более 5%. Богат легкоусвояемым белком, жирными кислотами Омега-3, витамином B12 (105% нормы в порции), йодом, фосфором, магнием и мощнейшим антиоксидантом селеном .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 90–110 ккал \n\nБелки: 17–20 г \n\nЖиры: 0,5–1 г \n\nУглеводы: 2–3 г",
+                        "image": "product-012.jpg"
+            },
+            {
+                        "id": 13,
+                        "cat": "Морепродукты",
+                        "name": "Креветка Королевская 40-60 вар с/м Полар",
+                        "price": 690,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar. Королевские креветки — идеальный перекус для тех, кто следит за фигурой: минимум калорий, максимум белка и пользы. Калибр 40-60 — это оптимальный размер: креветки уже вареные, нужно только разморозить и можно есть. Идеальны для пивных тарелок, салатов, пасты и закусок. Плотное, упругое мясо с насыщенным сладковатым вкусом.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 85–93 ккал \n\nБелки: 18 г \n\nЖиры: 1–1,5 г \n\nУглеводы: 0–1 г",
+                        "image": "product-013.jpg"
+            },
+            {
+                        "id": 14,
+                        "cat": "Морепродукты",
+                        "name": "Креветка Ваннамей «Бабочка» крупная 20/30",
+                        "price": 590,
+                        "pack": "упаковка 500 гр",
+                        "desc": "Креветки Ваннамей с удаленным панцирем и вскрытые «бабочкой» — максимальное удобство для быстрых ужинов и праздничных закусок. Крупный калибр гарантирует сочность и эффектный вид на тарелке. Это уже готовая к приготовлению креветка в формате «бабочка» — панцирь удален (кроме хвостика), спинка разрезана и очищена от кишечной вены. Размер 20/30 означает крупную креветку: идеально для эффектной подачи. Остается только разморозить и обжарить на гриле, сковороде или запечь в панировке — 2–3 минуты и готово ресторанное блюдо.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 85–95 ккал\n\nБелки: 18–20 г\n\nЖиры: 1–1,5 г\n\nУглеводы: 0 г",
+                        "image": "product-014.jpg"
+            },
+            {
+                        "id": 15,
+                        "cat": "Морепродукты",
+                        "name": "Креветка Ваннамей без головы 26-30",
+                        "price": 930,
+                        "pack": "упаковка 1 кг",
+                        "desc": "Калибр 26–30 — крупные, мясо плотное и сладковатое. Голова удалена, но панцирь оставлен — идеальный баланс удобства и вкуса. Панцирь работает как природная упаковка: сохраняет всю сочность и нежность мяса при варке или жарке, защищает от потери влаги и усиливает вкус бульона. Без головы, а значит меньше веса отходов, больше чистого мяса. Панцирь легко снимается после готовки, а во время — дарит максимальную сочность.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 85–95 ккал\n\nБелки: 18–20 г\n\nЖиры: 1–1,5 г\n\nУглеводы: 0 г",
+                        "image": "product-015.jpg"
+            },
+            {
+                        "id": 16,
+                        "cat": "Морепродукты",
+                        "name": "Салатное мясо камчатского краба 500г",
+                        "price": 2200,
+                        "pack": "упаковка 500 гр",
+                        "desc": "Салатное мясо — это экономичный формат премиального продукта: тот же камчатский краб, но по более доступной цене. Подходит для ежедневного меню и праздничных блюд. Добыча в чистых водах Дальнего Востока, варка и шоковая заморозка сразу на судне сохраняет максимальную свежесть . Это не имитация, а натуральное мясо камчатского краба — микс из кусочков фаланг, розы и колена, собранных после разделки . Сочное, нежное, с легкой сладостью и идеальной текстурой. Уже вареное и готовое к употреблению: просто разморозь и добавляй в салаты, закуски или пасту. В вакуумной упаковке 500 г — никаких отходов, только чистый деликатес.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 100–140 ккал \n\nБелки: 16–20 г \n\nЖиры: 2–4 г \n\nУглеводы: 0",
+                        "image": "product-016.jpg"
+            },
+            {
+                        "id": 17,
+                        "cat": "Морепродукты",
+                        "name": "Креветка Ваннамей 30-40",
+                        "price": 1690,
+                        "pack": "упаковка 2 кг",
+                        "desc": "Калибр 30-40 означает, что в 1 кг содержится от 30 до 40 креветок — это крупный, универсальный размер . Мясо нежное, упругое, с приятным сладковатым вкусом . Можно готовить в панцире для насыщенного вкуса или очистить — идеальна для горячих блюд, супов, салатов, пасты и гриля . Идеально для диетического и спортивного питания .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 105–110 ккал \n\nБелки: 24 г \n\nЖиры: 1–2 г \n\nУглеводы: 0,8–1 г",
+                        "image": "product-017.jpg"
+            },
+            {
+                        "id": 18,
+                        "cat": "Морепродукты",
+                        "name": "Мясо мидий 200-300",
+                        "price": 351,
+                        "pack": "упаковка 1 кг",
+                        "desc": "Калибр 200–300 означает количество штук в 1 кг — мидии среднего размера, сочные и упругие . Шоковая заморозка сразу после варки сохраняет нежную текстуру и свежесть. Мясо нежное, слегка сладковатое, с мягким морским ароматом. Идеально для пасты, супов, ризотто, салатов и закусок. Доступная цена при высокой питательной ценности — бюджетный суперфуд . Рекордсмен по содержанию витамина B12. Мясо мидий — низкокалорийный источник полноценного белка и уникального набора микроэлементов. Перед приготовлением рекомендуется промыть, чтобы удалить возможные частицы раковин .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 77–115 ккал (в зависимости от производителя и содержания глазури)\n\nБелки: 11–15 г\n\nЖиры: 2–3 г\n\nУглеводы: 2–5 г",
+                        "image": "product-018.jpg"
+            },
+            {
+                        "id": 19,
+                        "cat": "Морепродукты",
+                        "name": "Креветка Арктида 31/40 чищенная с хв",
+                        "price": 1196,
+                        "pack": "упаковка 1 кг",
+                        "desc": "Арктида (северная креветка) отличается от тепловодных видов более нежным и сладковатым вкусом. Продукция Polar проходит строгий контроль качества, не содержит антибиотиков и консервантов . Шоковая заморозка сохраняет нежную текстуру и сладковатый вкус. Это уже очищенные креветки с сохранением хвостика — максимальное удобство без потери эстетики. Калибр 31/40 означает оптимальный размер. Хвостик оставлен для красивой подачи, а панцирь полностью удален — никаких отходов, только чистое мясо. Готовы к употреблению после разморозки или достаточно прогреть 1–2 минуты в любом блюде.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 68–80 ккал \n\nБелки: 17–18 г \n\nЖиры: 0,8–1 г \n\nУглеводы: 1 г",
+                        "image": "product-019.jpg"
+            },
+            {
+                        "id": 20,
+                        "cat": "Морепродукты",
+                        "name": "Морской коктейль \"Арктида\"",
+                        "price": 430,
+                        "pack": "упаковка 1 кг",
+                        "desc": "ТМ Polar Состав: Кусочки и щупальца кальмара, мясо мидий, креветки очищенные, кусочки осьминога. 79% калорийности морского коктейля приходится на белок — это идеальный продукт для тех, кто следит за фигурой и хочет получать максимум пользы из каждого приема пищи . Шоковая заморозка сохраняет свежесть и текстуру каждого компонента. Идеален для пасты, ризотто, салатов, супов, пиццы или как самостоятельная закуска с соусом.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 85 ккал \n\nБелки: 16 г \n\nЖиры: 1,5 г \n\nУглеводы: 1 г",
+                        "image": "product-020.jpg"
+            },
+            {
+                        "id": 21,
+                        "cat": "Морепродукты",
+                        "name": "Кальмар командорский филе. Полар",
+                        "price": 790,
+                        "pack": "упаковка 1 кг",
+                        "desc": "ТМ Polar. Чистое филе командорского кальмара — никаких отходов, только нежное и сочное мясо. Командорский кальмар ценится выше других видов за более плотную и сладковатую текстуру. Идеален для салатов, горячих блюд, фарширования или как самостоятельная закуска. Легко готовится: достаточно 2–3 минуты варки или обжаривания. Добыча в чистых водах Дальнего Востока (Командорские острова). Шоковая заморозка сохраняет нежную текстуру и свежесть. Продукция отмечена знаком качества .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 100 ккал\n\nБелки: 18 г\n\nЖиры: 2 г\n\nУглеводы: 2 г",
+                        "image": "product-021.jpg"
+            },
+            {
+                        "id": 22,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Окунь морской филе на коже",
+                        "price": 730,
+                        "pack": "от 1 кг",
+                        "desc": "Филе на коже — идеальный формат для приготовления. Кожа работает как природная упаковка: сохраняет сочность и нежность мяса, не дает филе разваливаться при жарке или запекании . Практически без костей, нежное белое мясо с деликатным морским вкусом, напоминающим треску, но более мягкое . Универсально в приготовлении: жарь, запекай, вари, готовь на пару или гриле. Шоковая заморозка сразу после вылова сохраняет всю свежесть и пользу.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 99–105 ккал \n\nБелки: 18–18,2 г \n\nЖиры: 3–3,6 г \n\nУглеводы: 0 г",
+                        "image": "product-022.jpg"
+            },
+            {
+                        "id": 23,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Минтай филе без кожи и костей",
+                        "price": 530,
+                        "pack": "от 1 кг",
+                        "desc": "Минтай — абсолютный диетический чемпион: минимум калорий, максимум белка и уникальный набор микроэлементов по доступной цене. Чистое филе без кожи и костей — никаких отходов, только нежное белое мясо с нейтральным вкусом, который подходит для любых блюд . Минтай — одна из самых экологически чистых рыб: питается планктоном, живет недолго, поэтому не накапливает ртуть и токсины . Идеален для детского, диетического и спортивного питания .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 72–80 ккал \n\nБелки: 16–17 г \n\nЖиры: 0,5–1 г \n\nУглеводы: 0 г",
+                        "image": "product-023.jpg"
+            },
+            {
+                        "id": 24,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Лосось атл (семга) филе на коже с/к 0,9-1,3 с/м в/у",
+                        "price": 1910,
+                        "pack": "упаковка от 0,9 до 1,3 кг",
+                        "desc": "Производитель Инарктика (№1 в России по выращиванию форели и лосося). Высочайший стандарт качества и экологичности. Крупное филе на коже — максимальная сочность и польза в каждом куске. Вакуумная упаковка сохраняет свежесть до 12 месяцев. Филе на коже крупного калибра 0,9–1,3 кг — это премиальный формат для ресторанных блюд дома. Кожа сохраняет сочность при жарке или запекании, не дает филе пересушиться и придает золотистую хрустящую корочку. Никаких костей и хлопот с разделкой — только нежное, жирное мясо с насыщенным вкусом. Идеально для стейков на гриле, запекания целиком или праздничных блюд.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 150–160 ккал (в зависимости от жирности)\n\nБелки: 20–22 г\n\nЖиры: 8–11 г\n\nУглеводы: 0 г",
+                        "image": "product-024.jpg"
+            },
+            {
+                        "id": 25,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Тилапия филе",
+                        "price": 496,
+                        "pack": "от 1 кг",
+                        "desc": "Чистое филе без кожи и костей — никаких отходов, только нежное белое мясо с мягким, сладковатым вкусом без специфического рыбного запаха . Тилапию называют «речной курицей» за нейтральный вкус и нежность . Универсальна в приготовлении: жарь, запекай, туши с овощами, готовь на пару или делай котлеты . Идеальна для детского и диетического питания . Продукция проходит строгий ветеринарный контроль.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 96–100 ккал \n\nБелки: 18–21 г \n\nЖиры: 1–2,4 г \n\nУглеводы: 0 г",
+                        "image": "product-025.jpg"
+            },
+            {
+                        "id": 26,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Семга фарш Инарктика 400 гр",
+                        "price": 403,
+                        "pack": "упаковка 400    гр",
+                        "desc": "Фарш сохраняет все свойства свежей семги — Омега-3, витамин D, витамин B12, селен, йод, фосфор. Легкоусвояемый белок для здоровья мышц и иммунитета.Фарш Инарктика — это экономия времени без потери качества. Из одной упаковки можно накормить семью ужином с минимальными усилиями. Хранится в морозилке до 6 месяцев — всегда под рукой для быстрых идей.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 160–170 ккал\n\nБелки: 17–19 г\n\nЖиры: 9–10 г\n\nУглеводы: 0 г",
+                        "image": "product-026.jpg"
+            },
+            {
+                        "id": 27,
+                        "cat": "Рыбное филе, медальоны, фарш",
+                        "name": "Горбуша фарш Полар 400 гр",
+                        "price": 209,
+                        "pack": "упаковка 400    гр",
+                        "desc": "ТМ Polar Чистый фарш из дикой горбуши — только натуральное мясо, без костей, шкуры и добавок. В отличие от семги, горбуша более диетическая, но в формате фарша остается сочной и нежной. Вариантов приготовления — множество : Котлеты и бургеры — сочные, с хрустящей корочкой, Фрикадельки для супов — легкие и полезные\nНачинка для блинов, пирожков, вареников, пиццы\nРыбные палочки — полезный фастфуд для детей\nЗапеканки и террины с овощами и сыром \nКотлеты ПП — запекать в духовке, жарить на гриле без масла\nФаршированные овощи (перцы, кабачки, помидоры)\nПаштет — нежный, с сливочным маслом и специями",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 140 ккал\n\nБелки: 21 г\n\nЖиры: 6,5 г\n\nУглеводы: 0",
+                        "image": "product-027.jpg"
+            },
+            {
+                        "id": 28,
+                        "cat": "Икра",
+                        "name": "Икра форели 250г стекло",
+                        "price": 1690,
+                        "pack": "упаковка 250 гр",
+                        "desc": "Классическая стеклянная банка 250 г — премиальная упаковка, которая сохраняет вкус и позволяет оценить продукт визуально. Икра форели — самая нежная среди лососевых: икринки мелкие (2–3 мм), упругие, с рассыпчатой структурой и приятным слабосоленым вкусом без горечи . Ярко-оранжевый цвет и деликатная текстура делают ее идеальным украшением праздничного стола .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 200–245 ккал \n\nБелки: 21–32 г \n\nЖиры: 7–12 г \n\nУглеводы: 0",
+                        "image": "product-028.jpg"
+            },
+            {
+                        "id": 29,
+                        "cat": "Икра",
+                        "name": "Икра Кеты \"Залив Никалая\" 200 гр",
+                        "price": 1430,
+                        "pack": "упаковка 200 гр",
+                        "desc": "Традиционный засол, заводская фасовка, строгий контроль качества. Икра кеты — королевская среди лососевых: крупная янтарная икринка (4–6 мм) с плотной оболочкой. Нежный сливочно-маслянистый вкус без горечи, рассыпчатая текстура.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 245–255 ккал\n\nБелки: 25–28 г\n\nЖиры: 13–15 г\n\nУглеводы: 0–1 г",
+                        "image": "product-029.jpg"
+            },
+            {
+                        "id": 30,
+                        "cat": "Икра",
+                        "name": "Икра нерки ОФВРОРКК 200 гр",
+                        "price": 1430,
+                        "pack": "упаковка 200 гр",
+                        "desc": "Камчатка, заводская фасовка. Икра нерки отличается самым ярким цветом и насыщенным вкусом среди лососевых. Богата витаминами A, D, E, группы В, фолиевой кислотой, лецитином, а также йодом, фосфором, железом и селеном .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 240–250 ккал\n\nБелки: 27–30 г\n\nЖиры: 13–15 г\n\nУглеводы: 0–1 г",
+                        "image": "product-030.jpg"
+            },
+            {
+                        "id": 31,
+                        "cat": "Консервы",
+                        "name": "Сельдь филе в масле 450 гр ТМ Штиль",
+                        "price": 393,
+                        "pack": "450 гр",
+                        "desc": "ТМ «Штиль» (Россия, Мурманск). Продукт из атлантической сельди, филе нарезано кусочками и залито маслом. Состав: сельдь, соль, специи (перец душистый, лавровый лист) — ничего лишнего . Стеклянная банка 450 г — удобная форма для хранения, можно сразу видеть качество продукта. Срок хранения 24 месяца при температуре от 0 до +20°C. После вскрытия хранить в холодильнике не более суток .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 158 ккал\n\nБелки: 18 г\n\nЖиры: 9 г\n\nУглеводы: 0 г",
+                        "image": "product-031.jpg"
+            },
+            {
+                        "id": 32,
+                        "cat": "Консервы",
+                        "name": "Тунец в собственном соку 450 гр ТМ Штиль",
+                        "price": 597,
+                        "pack": "450 гр",
+                        "desc": "ТМ «Штиль» (Россия, Мурманск). Консервы из желтоперого тунца, филе нарезано кусочками. Состав: тунец, соль, специи молотые (перец душистый, лавровый лист) — ничего лишнего . Готовый к употреблению продукт: открыл банку — и сразу в салат, на бутерброды, в пасту или пиццу. Стеклянная банка позволяет рассмотреть качество: крупные куски, прозрачная заливка, без посторонних включений.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 96–118 ккал \n\nБелки: 21–24 г \n\nЖиры: 0,8–1,5 г \n\nУглеводы: 0 г",
+                        "image": "product-032.jpg"
+            },
+            {
+                        "id": 33,
+                        "cat": "Консервы",
+                        "name": "Печень трески 450 гр ТМ Штиль",
+                        "price": 797,
+                        "pack": "450 гр",
+                        "desc": "ТМ «Штиль» (Россия, Мурманск). Натуральные консервы из свежей печени трески, добытой в чистых водах Баренцева моря. Минимальная обработка и бережный посол сохраняют всю пользу и нежный вкус. Абсолютный рекордсмен по содержанию жирорастворимых витаминов: А, Е, Д, Омега 3",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 613 ккал\n\nБелки: 4,2 г\n\nЖиры: 65,7 г\n\nУглеводы: 1,2 г",
+                        "image": "product-033.jpg"
+            },
+            {
+                        "id": 34,
+                        "cat": "Консервы",
+                        "name": "Скумбрия Атлантика в масле ТМ Штиль 450 гр",
+                        "price": 549,
+                        "pack": "450 гр",
+                        "desc": "ТМ «Штиль» (Россия, Мурманск). Натуральные консервы из атлантической скумбрии — жирной, дикой, выловленной в северных морях. Стеклянная банка позволяет сразу оценить качество: крупные куски рыбы, залитые прозрачным маслом, без посторонних включений. Классическая скумбрия в масле — нежная, сочная, с насыщенным «тем» самым вкусом из детства. Масло сохраняет текстуру рыбы и добавляет ей мягкости. Готова к подаче сразу после открытия: на бутерброды, в салаты, с отварным картофелем или как самостоятельная закуска с луком и зеленью.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 318 ккал \n\nБелки: 14,4 г \n\nЖиры: 28,9 г \n\nУглеводы: 0 г",
+                        "image": "product-034.jpg"
+            },
+            {
+                        "id": 35,
+                        "cat": "Консервы",
+                        "name": "Мясо клешни краба 220 гр",
+                        "price": 910,
+                        "pack": "220 гр",
+                        "desc": "Состав: мясо краба, вода, соль — минимальная обработка для сохранения натурального вкуса.Мясо из клешни — особая ценность: именно здесь самое нежное, плотное и сладковатое мясо. В отличие от салатного мяса или фаланг, клешня дает крупные, красивые куски, которые идеально смотрятся на праздничном столе. Стеклянная банка позволяет рассмотреть продукт: крупные куски мяса в прозрачной заливке, без посторонних включений. Готов к употреблению сразу после открытия — в салаты, закуски, на бутерброды или как самостоятельный деликатес.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 75–90 ккал \n\nБелки: 18 г \n\nЖиры: 0,5–1,8 г \n\nУглеводы: 0",
+                        "image": "product-035.jpg"
+            },
+            {
+                        "id": 36,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Котлеты из филе минтая в картофельной шубке Полар",
+                        "price": 547,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из дикого дальневосточного минтая. Филе минтая измельчается, смешивается с натуральными ингредиентами и покрывается хрустящей картофельной корочкой. Шоковая заморозка сохраняет сочность и свежесть. Достаточно разогреть на сковороде, в духовке или аэрогриле — и через 10–15 минут готов сытный ужин. Особенно нравится детям: хрустящая корочка прячет полезную рыбу.",
+                        "kbju": "КБЖУ на 100 грамм (ориентировочно):\n\nКалорийность: 160–180 ккал\n\nБелки: 10–12 г\n\nЖиры: 5–7 г\n\nУглеводы: 15–18 г",
+                        "image": "product-036.jpg"
+            },
+            {
+                        "id": 37,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Котлеты из филе горбуши в кляре Полар",
+                        "price": 729,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из дикой дальневосточной горбуши. Нежное филе горбуши в хрустящем золотистом кляре. Шоковая заморозка сохраняет сочность и свежесть . Премиальный выбор для тех, кто ценит деликатесную кухню и хочет порадовать близких блюдом из красной рыбы .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 250–260 ккал\n\nБелки: 15 г\n\nЖиры: 15 г\n\nУглеводы: 14 г",
+                        "image": "product-037.jpg"
+            },
+            {
+                        "id": 38,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Котлеты из филе кальмара в кляре Полар",
+                        "price": 507,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar полуфабрикат из натурального филе командорского кальмара. Нежное мясо кальмара в хрустящем золотистом кляре. Шоковая заморозка сохраняет сочность и свежесть. Достаточно разогреть на сковороде, в духовке или аэрогриле — и через 10–15 минут готов сытный ужин. Отличная альтернатива рыбным котлетам для тех, кто хочет разнообразия.",
+                        "kbju": "КБЖУ на 100 грамм (ориентировочно):\n\nКалорийность: 175–205 ккал\n\nБелки: 12 г\n\nЖиры: 6–7 г\n\nУглеводы: 16–25 г",
+                        "image": "product-038.jpg"
+            },
+            {
+                        "id": 39,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Треугольники тресковые в панировк Полар",
+                        "price": 390,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из рыбы тресковых пород (минтай, треска, путассу, навага) в хрустящей панировке. Шоковая заморозка сохраняет сочность и свежесть . Достаточно обжарить на сковороде 4–6 минут без разморозки — и готов сытный ужин .",
+                        "kbju": "Калорийность: 130 ккал\n\nБелки: 13 г\n\nЖиры: 2 г\n\nУглеводы: 14 г",
+                        "image": "product-039.jpg"
+            },
+            {
+                        "id": 40,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Котлеты \"Дары Моря\" Смоленск",
+                        "price": 390,
+                        "pack": "от 1 кг",
+                        "desc": "Сочные котлеты из филе кальмара с луком и специями — нежные, мягкие, с приятным морским вкусом. Хрустящая панировка снаружи сохраняет сочность внутри. Универсальны в приготовлении: жарь, запекай, туши — всегда вкусно. Идеально как самостоятельное блюдо или с любым гарниром.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 215 ккал\n\nБелки: 17 г\n\nЖиры: 11 г\n\nУглеводы: 12 г",
+                        "image": "product-040.jpg"
+            },
+            {
+                        "id": 41,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Котлеты тресковые \"Лоцман\" Смоленск",
+                        "price": 379,
+                        "pack": "от 1 кг",
+                        "desc": "Домашний вкус без домашней возни. Сочные, нежные котлеты из тресковых пород с добавлением лука, манной крупы и специй — тот самый проверенный рецепт, который любят все. Хрустящая панировка снаружи, мягкая текстура внутри. Универсальны в приготовлении: жарь, запекай, туши — всегда вкусно. Идеально с пюре, рисом, гречкой или просто так.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 210 ккал\n\nБелки: 12 г\n\nЖиры: 11 г\n\nУглеводы: 15 г",
+                        "image": "product-041.jpg"
+            },
+            {
+                        "id": 42,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Креветки Королевские в панировке Полар",
+                        "price": 1090,
+                        "pack": "упаковка 1 кг",
+                        "desc": "Готовый полуфабрикат — никакой возни с чисткой, просто достал из морозилки и жаришь. Хрустящая золотистая панировка снаружи, нежная и сочная креветка внутри. Достаточно обжарить во фритюре или на сковороде 3–5 минут без разморозки — и готова ресторанная закуска. Идеально под пиво, как горячее блюдо или дополнение к салатам и пасте.",
+                        "kbju": "Калорийность: 160 ккал\n\nБелки: 20 г\n\nЖиры: 2 г\n\nУглеводы: 15 г",
+                        "image": "product-042.jpg"
+            },
+            {
+                        "id": 43,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Кольца кальмара в панировке Полар",
+                        "price": 767,
+                        "pack": "упаковка 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из колец командорского кальмара в хрустящей панировке (кляр + сухари). Шоковая заморозка сохраняет сочность и свежесть .",
+                        "kbju": "Калорийность: 160 ккал\n\nБелки: 9,5 г\n\nЖиры: 6,5 г\n\nУглеводы: 17 г",
+                        "image": "product-043.jpg"
+            },
+            {
+                        "id": 44,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Котлеты из филе щуки в кляре Полар",
+                        "price": 547,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из филе щуки с добавлением филе минтая. Шоковая заморозка сохраняет сочность и свежесть . Изысканные котлеты для ценителей рыбных блюд — сочные, нежные, с насыщенным вкусом и аппетитной золотистой корочкой . Достаточно обжарить на сковороде 5 минут с каждой стороны или запечь в духовке — и готов сытный ужин . Универсальное блюдо прекрасно сочетается с любыми гарнирами .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 190 ккал\n\nБелки: 11 г\n\nЖиры: 11 г\n\nУглеводы: 13 г",
+                        "image": "product-044.jpg"
+            },
+            {
+                        "id": 45,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Фиш филе рыбные порции",
+                        "price": 567,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Готовые порции рыбного филе в панировке — никакой возни с разделкой и панировкой, просто достал из морозилки и жаришь. Нежное филе минтая внутри и аппетитная хрустящая корочка снаружи создают идеальный баланс текстуры. Достаточно обжарить на сковороде 4–5 минут с каждой стороны без разморозки — и готов сытный ужин. Универсальное блюдо, которое любят и взрослые, и дети. Идеально в ФИШ бургер или с картофельным пюре, рисом или овощами.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 130 ккал\n\nБелки: 12 г\n\nЖиры: 2 г\n\nУглеводы: 14 г",
+                        "image": "product-045.jpg"
+            },
+            {
+                        "id": 46,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Фишкейк с сыром и брокколи Полар",
+                        "price": 442,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar  Полуфабрикат из рыбного филе (минтай / тресковые) с добавлением сыра и брокколи в нежной панировке. Шоковая заморозка сохраняет сочность и свежесть. Готовый полуфабрикат для тех, кто хочет вкусно и полезно накормить семью без лишних хлопот. Нежное рыбное филе, расплавленный сыр и кусочки брокколи внутри, хрустящая корочка снаружи — идеальное сочетание вкуса и пользы. Достаточно разогреть на сковороде, в духовке или аэрогриле 10–15 минут без разморозки — и готов сытный ужин.",
+                        "kbju": "КБЖУ на 100 грамм :\n\nКалорийность: 180–210 ккал\n\nБелки: 12–14 г\n\nЖиры: 8–10 г\n\nУглеводы: 12–16 г",
+                        "image": "product-046.jpg"
+            },
+            {
+                        "id": 47,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Треугольник Лососевый Полар",
+                        "price": 449,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из лососевых пород рыб (семга/форель/горбуша) в хрустящей панировке. Шоковая заморозка сохраняет сочность и свежесть. Хрустящая панировка снаружи, нежное мясо красной рыбы внутри. Достаточно обжарить на сковороде 4–6 минут без разморозки — и готов сытный ужин.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 200–220 ккал\n\nБелки: 10–12 г\n\nЖиры: 8–10 г\n\nУглеводы: 18–22 г",
+                        "image": "product-047.jpg"
+            },
+            {
+                        "id": 48,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Рыбные фигурки Полар",
+                        "price": 395,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar  Полуфабрикат из фарша трески атлантической и путассу северной в хрустящей панировке. Шоковая заморозка сохраняет сочность и свежесть . Забавные фигурки в панировке — то, что нужно, чтобы накормить рыбой малоежек и приучить детей к полезному питанию. Мягкая рыбная начинка внутри, хрустящая корочка снаружи. Достаточно обжарить на сковороде 4–6 минут без разморозки — и готов весёлый ужин.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 94 ккал\n\nБелки: 10 г\n\nЖиры: 9 г\n\nУглеводы: 0,1 г",
+                        "image": "product-048.jpg"
+            },
+            {
+                        "id": 49,
+                        "cat": "Рыбные полуфабрикаты",
+                        "name": "Наггетсы домашние из тресковых парод",
+                        "price": 409,
+                        "pack": "от 1 кг",
+                        "desc": "ТМ Polar Полуфабрикат из фарша рыбы тресковых пород (минтай, навага, треска атлантическая, путассу северная) в хрустящей панировке. Шоковая заморозка сохраняет сочность и свежесть . Домашний формат наггетсов — нежные внутри, хрустящие снаружи, с привычным вкусом, который любят и взрослые, и дети. Готовятся без разморозки всего 4–6 минут на сковороде или в духовке. Идеальны как самостоятельное блюдо с соусом, в качестве перекуса или дополнения к гарниру. Быстро, сытно и всегда вкусно",
+                        "kbju": "Калорийность: 160 ккал\n\nБелки: 9 г\n\nЖиры: 5 г\n\nУглеводы: 19 г",
+                        "image": "product-049.jpg"
+            },
+            {
+                        "id": 50,
+                        "cat": "Вкусно и быстро",
+                        "name": "Сырные палочки моцарелла",
+                        "price": 690,
+                        "pack": "упаковка 1 кг",
+                        "desc": "Хрустящая золотистая корочка снаружи, нежная тянущаяся моцарелла внутри — идеальная закуска для всей семьи. Готовятся за 2 минуты во фритюре без разморозки. Отлично подходят как самостоятельное блюдо с соусом, для пивной тарелки, детского меню или быстрого перекуса .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 202 ккал\n\nБелки: 12,5 г\n\nЖиры: 8,5 г\n\nУглеводы: 21,5 г",
+                        "image": "product-050.jpg"
+            },
+            {
+                        "id": 51,
+                        "cat": "Вкусно и быстро",
+                        "name": "Наггетсы куриные классические Мираторг",
+                        "price": 775,
+                        "pack": "упаковка 1,5 кг",
+                        "desc": "Только белое мясо куриной грудки — нежное филе . Наггетсы получаются сочными внутри и хрустящими снаружи. Нейтральный вкус без лишних специй подходит и как самостоятельное блюдо, и как часть основного приёма пищи . Готовятся за 3–6 минут без разморозки: на сковороде, во фритюре или в духовке.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 180–183 ккал\n\nБелки: 13 г\n\nЖиры: 7,4 г\n\nУглеводы: 16 г",
+                        "image": "product-051.jpg"
+            },
+            {
+                        "id": 52,
+                        "cat": "Полуфабрикаты",
+                        "name": "Котлеты \"Из куриной грудки со сливочным маслом\" Смоленск",
+                        "price": 451,
+                        "pack": "от 1 кг",
+                        "desc": "Главная особенность — сливочное масло внутри, которое при жарке равномерно пропитывает куриное филе, делая котлеты невероятно сочными и нежными. Только филе грудки, свежий лук и натуральное масло. Хрустящая панировка снаружи сохраняет сок внутри. Идеально для сытного ужина, когда хочется чего-то домашнего, вкусного и быстрого.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 355 ккал\n\nБелки: 13 г\n\nЖиры: 30 г\n\nУглеводы: 1 г",
+                        "image": "product-052.jpg"
+            },
+            {
+                        "id": 53,
+                        "cat": "Вкусно и быстро",
+                        "name": "Котлеты куриные со сливочным маслом и зеленью 1,5 кг Мираторг",
+                        "price": 797,
+                        "pack": "упаковка 1,5 кг",
+                        "desc": "Это не просто куриные котлеты — внутри каждой порции сливочное масло, которое при жарке тает и делает котлеты невероятно сочными и нежными. Свежая зелень (укроп, петрушка) добавляет аромат и свежесть. Только белое мясо грудки — никакой кожи и сои. Упаковка 1,5 кг — идеально для большой семьи или чтобы закупиться впрок.",
+                        "kbju": "КБЖУ на 100 грамм (средние значения):\n\nКалорийность: 182–195 ккал\n\nБелки: 17–19 г\n\nЖиры: 8–10 г\n\nУглеводы: 10–13 г",
+                        "image": "product-053.jpg"
+            },
+            {
+                        "id": 54,
+                        "cat": "Вкусно и быстро",
+                        "name": "Кордон Блю с ветчиной и сыром 1,485кг Мираторг",
+                        "price": 785,
+                        "pack": "упаковка 1,5 кг",
+                        "desc": "Это французская классика, ставшая международным хитом — сочная куриная грудка, внутри которой прячется ароматная ветчина и тягучий расплавленный сыр . Золотистая хрустящая корочка сохраняет сочность начинки . Готовится без разморозки: в духовке, на сковороде или во фритюре — 10–25 минут и готов ресторанный ужин дома. Упаковка 1,485 кг — идеально для большой семьи или чтобы закупиться впрок .",
+                        "kbju": "Калорийность: 235 ккал\n\nБелки: 12,6 г\n\nЖиры: 15 г\n\nУглеводы: 12,5 г",
+                        "image": "product-054.jpg"
+            },
+            {
+                        "id": 55,
+                        "cat": "Вкусно и быстро",
+                        "name": "Колбаски -Гриль из индейки Баварские 560г Рамай",
+                        "price": 389,
+                        "pack": "упаковка 0,56 кг",
+                        "desc": "Сочные, ароматные колбаски из индейки — идеальный выбор для гриля, пикника или быстрого ужина. Мясо индейки нежное, диетическое, с лёгким пряным вкусом баварских специй. Натуральная оболочка при жарке аппетитно хрустит, сохраняя сочность внутри. Достаточно обжарить на гриле, сковороде или запечь в духовке 10–15 минут без разморозки — и готово сытное блюдо. Упаковка 560 г рассчитана на компанию из 2–4 человек.",
+                        "kbju": "КБЖУ на 100 грамм (средние значения):\n\nКалорийность: 200–220 ккал\n\nБелки: 14–16 г\n\nЖиры: 15–17 г\n\nУглеводы: 1–3 г",
+                        "image": "product-055.jpg"
+            },
+            {
+                        "id": 56,
+                        "cat": "Вкусно и быстро",
+                        "name": "Колбаски -Гриль Говяжьи халяль 560г Рамай",
+                        "price": 429,
+                        "pack": "упаковка 0,56 кг",
+                        "desc": "Сочные, ароматные колбаски из отборной говядины — идеальный выбор для гриля, пикника или быстрого ужина. Натуральное мясо с пряными специями дает насыщенный вкус без лишних добавок. Халяль-сертификация гарантирует чистоту состава и соответствие религиозным требованиям. Натуральная оболочка при жарке аппетитно хрустит, сохраняя сочность внутри. Достаточно обжарить на гриле, сковороде или запечь в духовке 10–15 минут без разморозки — и готово сытное блюдо. Упаковка 560 г рассчитана на компанию из 2–4 человек.",
+                        "kbju": "КБЖУ на 100 грамм (средние значения):\n\nКалорийность: 220–250 ккал\n\nБелки: 14–16 г\n\nЖиры: 18–20 г\n\nУглеводы: 1–2 г",
+                        "image": "product-056.jpg"
+            },
+            {
+                        "id": 57,
+                        "cat": "Вкусно и быстро",
+                        "name": "Булка для Датских хотдогов Рамай",
+                        "price": 190,
+                        "pack": "в упаковке 7 шт",
+                        "desc": "Та самая правильная булка для датского хот-дога — длинная, с нежным мякишем и тонкой корочкой. Не крошится, не размокает от соусов, отлично держит форму. Достаточно разогреть в духовке, микроволновке или тостере 2–3 минуты — и основа для ресторанного хот-дога готова. Упаковка рассчитана на компанию: удобно для пикников, быстрых обедов и перекусов.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 280–300 ккал\n\nБелки: 8–9 г\n\nЖиры: 4–6 г\n\nУглеводы: 50–55 г",
+                        "image": "product-057.jpg"
+            },
+            {
+                        "id": 58,
+                        "cat": "Вкусно и быстро",
+                        "name": "Булка для Французских хотдогов Рамай",
+                        "price": 230,
+                        "pack": "в упаковке 7 шт",
+                        "desc": "Та самая правильная булка для французского хот-дога — удлинённая, с хрустящей корочкой и нежным мякишем. Главное отличие от датского формата: булка имеет отверстие внутри, куда вставляется сосиска или колбаска, а соусы добавляются сверху. Не крошится, не размокает, отлично держит форму. Достаточно разогреть 2–3 минуты — и основа для уличного перекуса готова. Идеально для пикников, быстрых обедов и перекусов.",
+                        "kbju": "КБЖУ на 100 грамм (ориентировочно):\n\nКалорийность: 280–300 ккал\n\nБелки: 8–9 г\n\nЖиры: 4–6 г\n\nУглеводы: 50–55 г",
+                        "image": "product-058.jpg"
+            },
+            {
+                        "id": 59,
+                        "cat": "Полуфабрикаты",
+                        "name": "Хинкали со свининой и говядиной",
+                        "price": 498,
+                        "pack": "от 1 кг",
+                        "desc": "Настоящие хинкали с насыщенным мясным вкусом — сочная свинина и говядина внутри, тонкое эластичное тесто снаружи. Ароматная кинза и чёрный перец добавляют грузинский характер. Варить 10–12 минут в подсоленной воде — и готов сытный обед или ужин.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 217 ккал\n\nБелки: 10 г\n\nЖиры: 9 г\n\nУглеводы: 24 г",
+                        "image": "product-059.jpg"
+            },
+            {
+                        "id": 60,
+                        "cat": "Полуфабрикаты",
+                        "name": "Пицца \"Пепперони\" 400 гр",
+                        "price": 275,
+                        "pack": "1 шт",
+                        "desc": "Ресторанный вкус за 4–6 минут без лишних хлопот. Тонкая хрустящая основа, ароматный томатный соус, тягучая моцарелла и пикантная колбаса пепперони — классика, которую любят все. Достаточно разогреть в микроволновке, не размораживая, и сытный ужин готов. Идеально для быстрого перекуса, когда нет времени или желания готовить.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 218 ккал\n\nБелки: 9 г\n\nЖиры: 10,5 г\n\nУглеводы: 22 г",
+                        "image": "product-060.jpg"
+            },
+            {
+                        "id": 61,
+                        "cat": "Полуфабрикаты",
+                        "name": "Колбаски \"Шашлычные\" 800 гр",
+                        "price": 357,
+                        "pack": "1 шт",
+                        "desc": "Настоящий шашлычный вкус без маринования и разделки. Сочная свинина с нежным шпиком, ароматным луком и чёрным перцем — классическое сочетание для пикника или домашнего ужина. Достаточно обжарить на сковороде, гриле или запечь в духовке — и готово сытное мясное блюдо.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 259 ккал\n\nБелки: 12 г\n\nЖиры: 23 г\n\nУглеводы: 1 г",
+                        "image": "product-061.jpg"
+            },
+            {
+                        "id": 62,
+                        "cat": "Полуфабрикаты",
+                        "name": "Перец фаршированный",
+                        "price": 395,
+                        "pack": "от 1 кг",
+                        "desc": "Целые перчики, начинённые ароматным фаршем из свинины и говядины с рисом и луком. Остаётся только потушить в соусе или запечь — и сытный ужин готов.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 214 ккал\n\nБелки: 5 г\n\nЖиры: 20 г\n\nУглеводы: 3,6 г",
+                        "image": "product-062.jpg"
+            },
+            {
+                        "id": 63,
+                        "cat": "Полуфабрикаты",
+                        "name": "Блинчики с конфитюром \"Вишневый\"",
+                        "price": 309,
+                        "pack": "от 1 кг",
+                        "desc": "Тонкое нежное тесто и сочная вишневая начинка с приятной кислинкой — классика, которую любят все. Достаточно разогреть на сковороде, в духовке или микроволновке 2–3 минуты — и готов вкусный завтрак или перекус.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 134 ккал\n\nБелки: 3 г\n\nЖиры: 2 г\n\nУглеводы: 26 г",
+                        "image": "product-063.jpg"
+            },
+            {
+                        "id": 64,
+                        "cat": "Полуфабрикаты",
+                        "name": "Блинчики с курицей",
+                        "price": 389,
+                        "pack": "от 1 кг",
+                        "desc": "Тонкое нежное тесто и сочная начинка из обжаренного куриного мяса с луком и перцем — классическое сочетание, которое любят все. Достаточно разогреть на сковороде, в духовке или микроволновке 2–3 минуты — и готов сытный приём пищи. Идеально, когда нет времени готовить, а накормить семью нужно быстро и вкусно.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 273 ккал\n\nБелки: 10 г\n\nЖиры: 11,5 г\n\nУглеводы: 32,5 г",
+                        "image": "product-064.jpg"
+            },
+            {
+                        "id": 65,
+                        "cat": "Полуфабрикаты",
+                        "name": "Блинчики с творогом",
+                        "price": 297,
+                        "pack": "от 1 кг",
+                        "desc": "Вкус детства без хлопот. Тонкие эластичные блинчики и сладкая творожная начинка — просто, честно и вкусно. Никаких лишних добавок, только творог и сахар внутри. Достаточно разогреть 2–3 минуты — и готов сытный завтрак или полезный перекус.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 133 ккал\n\nБелки: 5 г\n\nЖиры: 3 г\n\nУглеводы: 21 г",
+                        "image": "product-065.jpg"
+            },
+            {
+                        "id": 66,
+                        "cat": "Полуфабрикаты",
+                        "name": "Чебурек обжаренный с тресковым фаршем Экспрод",
+                        "price": 410,
+                        "pack": "от 1 кг",
+                        "desc": "Готовый чебурек — только разогреть и подавать. Хрустящее тесто, сочная начинка из фарша минтая с луком и специями. Удобный формат для быстрого перекуса, пикника или когда хочется домашней выпечки без возни с тестом и фаршем. Уже обжарен — достаточно разогреть в духовке, на сковороде или в аэрогриле.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 300 ккал\n\nБелки: 8,5 г\n\nЖиры: 18 г\n\nУглеводы: 26 г",
+                        "image": "product-066.jpg"
+            },
+            {
+                        "id": 67,
+                        "cat": "Полуфабрикаты",
+                        "name": "Чебурек обжаренный с куриным фаршем Экспрод",
+                        "price": 430,
+                        "pack": "от 1 кг",
+                        "desc": "Готовый чебурек — только разогреть и подавать. Хрустящее тесто, сочная начинка из куриного филе с луком и специями. Удобный формат для быстрого перекуса, пикника или когда хочется домашней выпечки без возни с тестом и фаршем. Уже обжарен — достаточно разогреть в духовке, на сковороде или в аэрогриле.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 320 ккал\n\nБелки: 7 г\n\nЖиры: 20 г\n\nУглеводы: 28 г",
+                        "image": "product-067.jpg"
+            },
+            {
+                        "id": 68,
+                        "cat": "Полуфабрикаты",
+                        "name": "Пельмени Московские со сливками",
+                        "price": 389,
+                        "pack": "от 1 кг",
+                        "desc": "Тесто на натуральных сливках — оно эластичнее, нежнее и вкуснее обычного. Внутри — классическая начинка из говядины, свинины и шпика с луком и перцем. Варить 3–6 минут после всплытия — и готов сытный домашний обед.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 227 ккал\n\nБелки: 9 г\n\nЖиры: 11 г\n\nУглеводы: 23 г",
+                        "image": "product-068.jpg"
+            },
+            {
+                        "id": 69,
+                        "cat": "Полуфабрикаты",
+                        "name": "Голубцы домашние",
+                        "price": 337,
+                        "pack": "от 1 кг",
+                        "desc": "Классические голубцы с мясной начинкой и рисом — вкус домашней кухни без лишних хлопот.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 222 ккал\n\nБелки: 6 г\n\nЖиры: 18 г\n\nУглеводы: 9 г",
+                        "image": "product-069.jpg"
+            },
+            {
+                        "id": 70,
+                        "cat": "Полуфабрикаты",
+                        "name": "Шницель \"Охотничий\"",
+                        "price": 367,
+                        "pack": "от 1 кг",
+                        "desc": "Особенность «Охотничьего» шницеля — добавление шампиньонов, которые придают блюду насыщенный грибной аромат и делают вкус интереснее. Сочная свинина и нежная говядина в рубленом фарше, хрустящая панировка, ароматный лук и кусочки грибов внутри. Жарить, тушить или запекать без разморозки — и готов ужин для настоящих охотников до вкусной еды.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 239 ккал\n\nБелки: 8 г\n\nЖиры: 23 г\n\nУглеводы: — (менее 1 г)",
+                        "image": "product-070.jpg"
+            },
+            {
+                        "id": 71,
+                        "cat": "Полуфабрикаты",
+                        "name": "Медальоны из куриной грудки",
+                        "price": 587,
+                        "pack": "от 1 кг",
+                        "desc": "Цельное филе грудки — никакого фарша и сои, только натуральное мясо. Нежная куриная грудка в двойной панировке (жидкая + сухари) сохраняет сочность и дает хрустящую корочку. Идеальный формат для быстрого ужина: жарить, запекать или тушить без разморозки.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 158 ккал\n\nБелки: 17 г\n\nЖиры: 12 г\n\nУглеводы: — менее 1 г",
+                        "image": "product-071.jpg"
+            },
+            {
+                        "id": 72,
+                        "cat": "Полуфабрикаты",
+                        "name": "Сырники с шоколадом",
+                        "price": 367,
+                        "pack": "от 1 кг",
+                        "desc": "Десерт, который любит вся семья. Состав: творог с м.д.ж. 9%, вода, манная крупа, сахар, ванилин, шоколадная глазурь.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 237 ккал\n\nБелки: 7 г\n\nЖиры: 7,5 г\n\nУглеводы: 35,5 г",
+                        "image": "product-072.jpg"
+            },
+            {
+                        "id": 73,
+                        "cat": "Полуфабрикаты",
+                        "name": "Пельмени \"Вкусные\"",
+                        "price": 359,
+                        "pack": "от 1 кг",
+                        "desc": "Пельмени, которые радуют глаз и вкус. Разноцветное тесто благодаря натуральным красителям — сафлор (желтый), шпинат (зеленый), паприка и кармин (красный/оранжевый). Внутри — сочное сочетание курицы и свинины с луком и перцем. Никакой искусственной химии в цвете, только натуральные ингредиенты. Варить 3–6 минут после всплытия — и готов яркий обед для всей семьи.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 227 ккал\n\nБелки: 9 г\n\nЖиры: 11 г\n\nУглеводы: 23 г",
+                        "image": "product-073.jpg"
+            },
+            {
+                        "id": 74,
+                        "cat": "Полуфабрикаты",
+                        "name": "Пельмени \"Отборные с говядиной\"",
+                        "price": 413,
+                        "pack": "упаковка 1 кг",
+                        "desc": "Только говядина — ни грамма свинины, только чистое мясо с луком и перцем. Идеально для тех, кто следит за фигурой или предпочитает менее жирные сорта мяса. Тесто тонкое, на яичном меланже, фарш сочный благодаря воде и пшеничной клетчатке. Всего 168 ккал на 100 г — можно есть без угрызений совести.",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 168 ккал\n\nБелки: 10 г\n\nЖиры: 4 г\n\nУглеводы: 23 г",
+                        "image": "product-074.jpg"
+            },
+            {
+                        "id": 75,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Брокколи",
+                        "price": 290,
+                        "pack": "от 1 кг",
+                        "desc": "Отборные соцветия брокколи, подвергнутые шоковой заморозке сразу после сбора. Технология быстрого замораживания сохраняет до 80% витамина С и практически все полезные свойства свежего овоща .",
+                        "kbju": "КБЖУ на 100 грамм:\n\nКалорийность: 28 ккал \n\nБелки: 3 г \n\nЖиры: 0,4 г \n\nУглеводы: 5,2 г",
+                        "image": "product-075.jpg"
+            },
+            {
+                        "id": 76,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Фасоль",
+                        "price": 210,
+                        "pack": "от 1 кг",
+                        "desc": "Отборная молодая фасоль, собранная на пике зрелости, нарезанная ровными кусочками и замороженная по шоковой технологии сразу после сбора. Технология быстрой заморозки сохраняет максимальный объём витаминов, свежий вкус и хрустящую текстуру",
+                        "kbju": "КБЖУ на 100 грамм :\n\nКалорийность: 23–30 ккал \n\nБелки: 2,2–4 г \n\nЖиры: 0,1–0,4 г \n\nУглеводы: 3–5 г",
+                        "image": "product-076.jpg"
+            },
+            {
+                        "id": 77,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Цветная капуста",
+                        "price": 230,
+                        "pack": "от 1 кг",
+                        "desc": "Отборные соцветия цветной капусты, собранные на пике зрелости и замороженные по технологии шоковой заморозки сразу после сбора . Технология быстрого замораживания сохраняет до 75–90% полезных веществ, натуральный вкус и упругую текстуру .",
+                        "kbju": "Калорийность\t23–28 ккал \nБелки\t2,0–2,2 г \nЖиры\t0,1–0,3 г \nУглеводы\t4,7–5 г",
+                        "image": "product-077.jpg"
+            },
+            {
+                        "id": 78,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Шпинат резаный",
+                        "price": 340,
+                        "pack": "от 1 кг",
+                        "desc": "Молодые листья шпината, нарезанные и замороженные по технологии шоковой заморозки сразу после сбора. Быстрое замораживание сохраняет до 95% витаминов, яркий зелёный цвет и свежий вкус .",
+                        "kbju": "Калорийность\t20–31 ккал\nБелки\t2,9–3,6 г\nЖиры\t0,3–0,6 г\nУглеводы\t1,3–2,7 г",
+                        "image": "product-078.jpg"
+            },
+            {
+                        "id": 79,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Шампиньоны резанные",
+                        "price": 340,
+                        "pack": "от 1 кг",
+                        "desc": "Отборные шампиньоны, нарезанные пластинами и замороженные по технологии шоковой заморозки сразу после сбора. Быстрое замораживание сохраняет до 80% полезных веществ, свежий вкус и упругую текстуру . Укрепляют иммунитет, улучшают работу нервной системы, поддерживают сердце и сосуды, нормализуют пищеварение. Низкокалорийный продукт идеален для диетического питания.",
+                        "kbju": "Калорийность\t22–30 ккал \nБелки\t2,4–4,5 г \nЖиры\t0–1 г \nУглеводы\t0,1–3,7 г",
+                        "image": "product-079.jpg"
+            },
+            {
+                        "id": 80,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Клубника",
+                        "price": 290,
+                        "pack": "от 1 кг",
+                        "desc": "Отборная ягода, собранная на пике спелости и замороженная по технологии шоковой заморозки сразу после сбора . Быстрое замораживание при температуре до -40°С сохраняет до 90% витаминов, включая витамин С, целостность клеток и яркий вкус . Исследования показывают: у женщин, регулярно употребляющих клубнику, на 34% снижается риск сердечного приступа . Поддерживает иммунитет, улучшает работу сердца и сосудов, борется с воспалительными процессами . Улучшает состояние кожи и волос, поднимает настроение .",
+                        "kbju": "Калорийность\t30–41 ккал\nБелки\t0,7–0,8 г\nЖиры\t0,4 г\nУглеводы\t7–8 г",
+                        "image": "product-080.jpg"
+            },
+            {
+                        "id": 81,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Весенние овощи",
+                        "price": 210,
+                        "pack": "от 1 кг",
+                        "desc": "Готовая овощная смесь — не нужно мыть, чистить и нарезать, просто достал из морозилки и готовишь. Классический состав: морковь, зелёный горошек, стручковая фасоль, картофель, лук . Идеальна для быстрых супов, гарниров, рагу или как основа для омлетов и запеканок. Не требует разморозки — сразу в кипящую воду или на сковороду.",
+                        "kbju": "Калорийность\t42–54 ккал \nБелки\t2,9–3,4 г \nЖиры\t0,1–0,3 г \nУглеводы\t6,9–10 г \nПищевые волокна\t3,3–4 г",
+                        "image": "product-081.jpg"
+            },
+            {
+                        "id": 82,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Мексиканская смесь",
+                        "price": 260,
+                        "pack": "от 1 кг",
+                        "desc": "Готовая смесь — не нужно мыть, чистить и нарезать, просто достал из морозилки и готовишь. Традиционный состав: сладкая кукуруза, зелёный горошек, стручковая фасоль, болгарский перец, морковь . Универсальна: жарь как гарнир, добавляй в супы, рагу, омлеты, запеканки или используй как начинку для пирогов. Готовится за 5–10 минут без разморозки .\nСостав: кукуруза, горошек зеленый, фасоль стручковая, перец сладкий, морковь. Без добавок и консервантов.",
+                        "kbju": "Калорийность\t48–87 ккал \nБелки\t2,4–3,5 г \nЖиры\t0,4–1 г \nУглеводы\t7,5",
+                        "image": "product-082.jpg"
+            },
+            {
+                        "id": 83,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Картофель фри 2,5кг Fry-me",
+                        "price": 931,
+                        "pack": "Упаковка 2,5 кг",
+                        "desc": "Картофель фри, произведённый по инновационной запатентованной технологии с нанесением тонкого слоя панировки на каждую соломинку. Технология позволяет сохранять хрустящую корочку и тепло в 5 раз дольше обычного картофеля фри .",
+                        "kbju": "Калорийность: 140 ккал\n\nБелки: 2,5 г\n\nЖиры: 4,5 г\n\nУглеводы: 23 г",
+                        "image": "product-083.jpg"
+            },
+            {
+                        "id": 84,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Картофельные крокеты 1,5 кг",
+                        "price": 447,
+                        "pack": "Упаковка 1,5 кг",
+                        "desc": "Нежное картофельное пюре внутри, золотистая хрустящая корочка снаружи — идеальный гарнир или самостоятельная закуска. Удобная форма крокетов удобна для жарки во фритюре или запекания в духовке. Готовятся за 3–5 минут без разморозки. Отлично подходят к мясу, рыбе или как перекус с соусом.",
+                        "kbju": "Калорийность: 346 ккал\n\nБелки: 2,6 г\n\nЖиры: 34,1 г\n\nУглеводы: 7,6 г",
+                        "image": "product-084.jpg"
+            },
+            {
+                        "id": 85,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Цукини слайсы",
+                        "price": 247,
+                        "pack": "от 1 кг",
+                        "desc": "Молодые цукини, нарезанные тонкими слайсами (кружочками) и замороженные по технологии шоковой заморозки сразу после сбора. Быстрое замораживание сохраняет до 90% витаминов, нежную текстуру и свежий вкус . Отлично подходят как гарнир к мясу и рыбе, основа для овощных запеканок или ингредиент для пасты. Не требует разморозки — сразу на сковороду .",
+                        "kbju": "Калорийность\t17 ккал \nБелки\t1,2 г \nЖиры\t0,1 г \nУглеводы\t1,7–2,3 г \nПищевые волокна\t1,3 г",
+                        "image": "product-085.jpg"
+            },
+            {
+                        "id": 86,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Гавайская смесь",
+                        "price": 238,
+                        "pack": "от 1 кг",
+                        "desc": "Классическая овощная смесь с рисом — отборные овощи, собранные на пике зрелости и замороженные по технологии шоковой заморозки сразу после сбора. Быстрое замораживание сохраняет до 90% витаминов, яркий цвет и свежий вкус . Состав: рис, горошек зеленый, кукуруза сахарная, перец сладкий.",
+                        "kbju": "Калорийность\t98–124 ккал \nБелки\t2,8–4,7 г \nЖиры\t0,3–4,1 г \nУглеводы\t15,7–22,6 г",
+                        "image": "product-086.jpg"
+            },
+            {
+                        "id": 87,
+                        "cat": "Замороженные овощи и ягоды",
+                        "name": "Компотная смесь",
+                        "price": 245,
+                        "pack": "от 1 кг",
+                        "desc": "В составе: целые абрикосы и сливы (с косточками, которые придают компоту насыщенный вкус и аромат), виноград, смородина и резаные персики. Никаких добавок и консервантов — только натуральные фрукты и ягоды. Идеально для быстрого приготовления домашнего компота без лишних хлопот.",
+                        "kbju": "Калорийность\t55–65 ккал\nБелки\t0,8 г\nЖиры\t0,2 г\nУглеводы\t13–15 г",
+                        "image": "product-087.jpg"
+            },
+            {
+                        "id": 88,
+                        "cat": "Масло",
+                        "name": "Масло сладко сливочное ГОСТ 500 гр",
+                        "price": 679,
+                        "pack": "Упаковка 500 гр",
+                        "desc": "Классическое масло с насыщенным сливочным вкусом и плотной пластичной текстурой. На срезе — блестящая, сухая поверхность, цвет  светло-желтый.",
+                        "kbju": "Калорийность: 748–750 ккал\n\nБелки: 0,5–0,8 г\n\nЖиры: 82,5 г\n\nУглеводы: 0,8–1 г",
+                        "image": "product-088.jpg"
+            },
+            {
+                        "id": 89,
+                        "cat": "Рыба слабой соли или холодного копчения",
+                        "name": "Форель слабой соли в/у",
+                        "price": 1890,
+                        "pack": "упаковка от 300 гр",
+                        "desc": "Нежное, слегка сладковатое мясо форели слабого посола, которое буквально тает во рту. Вакуумная упаковка сохраняет свежесть и сочность. Филе-кусок подходит для нарезки ломтиками, приготовления канапе, бутербродов, салатов, пасты и закусок. Продукт шоковой заморозки",
+                        "kbju": "Калорийность\t170–200 ккал \nБелки\t18–22 г \nЖиры\t6–12 г \nУглеводы\t0",
+                        "image": "product-089.jpg"
+            },
+            {
+                        "id": 90,
+                        "cat": "Рыба слабой соли или холодного копчения",
+                        "name": "Сёмга слабой соли в/у",
+                        "price": 1890,
+                        "pack": "упаковка от 300 гр",
+                        "desc": "Нежнейшее, маслянистое мясо семги слабого посола с идеальным балансом соли. Вакуумная упаковка сохраняет свежесть, сочность и насыщенный вкус. Филе-кусок подходит для нарезки ломтиками, приготовления канапе, бутербродов, салатов, пасты, роллов и закусок. Состав максимально честный: семга, сол",
+                        "kbju": "Калорийность\t187–210 ккал\nБелки\t19–23 г\nЖиры\t12–13 г\nУглеводы\t0 г",
+                        "image": "product-090.jpg"
+            },
+            {
+                        "id": 91,
+                        "cat": "Рыба слабой соли или холодного копчения",
+                        "name": "Форель х/копч в/у",
+                        "price": 1890,
+                        "pack": "упаковка от 300 гр",
+                        "desc": "Нежное, слегка сладковатое мясо форели с благородным ароматом дымка. Холодное копчение — самый щадящий способ обработки, при котором сохраняются все полезные вещества, а рыба остается упругой и сочной . Вакуумная упаковка защищает от окисления и посторонних запахов, продлевая срок хранения . Готово к употреблению: на бутерброды, в салаты, пасту, закуски или как самостоятельный деликатес.",
+                        "kbju": "Калорийность\t180–240 ккал \nБелки\t20–26 г \nЖиры\t10–16 г \nУглеводы\t0",
+                        "image": "product-091.jpg"
+            },
+            {
+                        "id": 92,
+                        "cat": "Рыба слабой соли или холодного копчения",
+                        "name": "Тунец х/копч в/у",
+                        "price": 1495,
+                        "pack": "упаковка от 300 гр",
+                        "desc": "Сочное, плотное мясо тунца с благородным ароматом дымка и насыщенным вкусом, который напоминает парную телятину . Холодное копчение — щадящий способ обработки, сохраняющий все полезные свойства и структуру рыбы . Вакуумная упаковка защищает от окисления и посторонних запахов, продлевая срок хранения . Готово к употреблению: на бутерброды, в салаты, пасту, закуски, канапе или как самостоятельный деликатес.",
+                        "kbju": "Калорийность\t135–145 ккал\nБелки\t24–25 г\nЖиры\t4–5 г\nУглеводы",
+                        "image": "product-092.jpg"
+            },
+            {
+                        "id": 93,
+                        "cat": "Рыба слабой соли или холодного копчения",
+                        "name": "Масляная х/копч в/у",
+                        "price": 1690,
+                        "pack": "упаковка от 300 гр",
+                        "desc": "Нежное, маслянистое мясо с благородным ароматом дымка и мягким вкусом. Холодное копчение сохраняет всю пользу и структуру рыбы. Вакуумная упаковка защищает от окисления и посторонних запахов, продлевая срок хранения . Готово к употреблению: на бутерброды, в салаты, канапе, закуски или как самостоятельный деликатес . Отлично сочетается с тостами, сливочным сыром, свежими огурцами и зеленью .",
+                        "kbju": "Калорийность\t154–200 ккал \nБелки\t16–19 г \nЖиры\t8,8–14 г \nУглеводы\t0",
+                        "image": "product-093.jpg"
+            }
+];
+
+        let cart = JSON.parse(localStorage.getItem(STORAGE_CART_KEY)) || [];
+        let currentCat = "Все";
+        let currentUser = null;
+        let currentProduct = null;
+        let heroIndex = 0;
+        let currentReferralCode = null;
+
+        function normalizeSpaces(text) {
+            return String(text || "").replace(/\s+/g, " ").trim();
+        }
+
+        function slugCode(id) {
+            return "FP" + String(id).replace(/[^0-9A-Za-z]/g, "").slice(-8).toUpperCase();
+        }
+
+        function getRefState() {
+            return JSON.parse(localStorage.getItem(STORAGE_REF_KEY)) || {
+                users: {},
+                links: {},
+                claims: {}
+            };
+        }
+
+        function setRefState(state) {
+            localStorage.setItem(STORAGE_REF_KEY, JSON.stringify(state));
+        }
+
+        function ensureReferralProfile(user) {
+            const state = getRefState();
+            if (!state.users[user.id]) {
+                const code = slugCode(user.id + Date.now().toString(36));
+                state.users[user.id] = {
+                    user_id: user.id,
+                    code,
+                    bonus_balance: 0,
+                    bonus_earned_total: 0,
+                    invited_count: 0,
+                    referred_users: [],
+                    first_order_done: false
+                };
+                state.links[code] = user.id;
+                setRefState(state);
+            }
+            return state.users[user.id];
+        }
+
+        function getCurrentReferralProfile() {
+            if (!currentUser) return null;
+            const state = getRefState();
+            return state.users[currentUser.id] || null;
+        }
+
+        function getReferralParam() {
+            const url = new URL(window.location.href);
+            return normalizeSpaces(url.searchParams.get("ref"));
+        }
+
+        function maybeSaveReferralAttribution() {
+            const refCode = getReferralParam();
+            if (!refCode || !currentUser) return;
+            const state = getRefState();
+            const ownerId = state.links[refCode];
+            if (!ownerId) return;
+            if (String(ownerId) === String(currentUser.id)) return;
+            state.claims[currentUser.id] = refCode;
+            setRefState(state);
+            currentReferralCode = refCode;
+        }
+
+        function applyReferralRewardIfNeeded(orderTotal) {
+            if (!currentUser) return;
+            const state = getRefState();
+            const myProfile = state.users[currentUser.id];
+            if (!myProfile || myProfile.first_order_done) {
+                if (myProfile) {
+                    myProfile.first_order_done = true;
+                    state.users[currentUser.id] = myProfile;
+                    setRefState(state);
+                }
+                return;
+            }
+
+            const refCode = state.claims[currentUser.id];
+            if (!refCode) {
+                myProfile.first_order_done = true;
+                state.users[currentUser.id] = myProfile;
+                setRefState(state);
+                return;
+            }
+
+            const ownerId = state.links[refCode];
+            if (!ownerId || String(ownerId) === String(currentUser.id)) {
+                myProfile.first_order_done = true;
+                state.users[currentUser.id] = myProfile;
+                setRefState(state);
+                return;
+            }
+
+            const referrer = state.users[ownerId];
+            if (!referrer) {
+                myProfile.first_order_done = true;
+                state.users[currentUser.id] = myProfile;
+                setRefState(state);
+                return;
+            }
+
+            const reward = Math.floor(orderTotal * REF_RATE);
+            if (reward > 0) {
+                referrer.bonus_balance += reward;
+                referrer.bonus_earned_total += reward;
+                if (!referrer.referred_users.includes(currentUser.id)) {
+                    referrer.referred_users.push(currentUser.id);
+                    referrer.invited_count = referrer.referred_users.length;
+                }
+                state.users[ownerId] = referrer;
+            }
+
+            myProfile.first_order_done = true;
+            state.users[currentUser.id] = myProfile;
+            delete state.claims[currentUser.id];
+            setRefState(state);
+        }
+
+        function getUserBonusBalance() {
+            const profile = getCurrentReferralProfile();
+            return profile ? Number(profile.bonus_balance || 0) : 0;
+        }
+
+        function getCartTotalRaw() {
+            return cart.reduce((s, i) => s + (i.price * i.qty), 0);
+        }
+
+        function getBonusToUse() {
+            const cb = document.getElementById("use-bonus-checkbox");
+            if (!cb || !cb.checked) return 0;
+            return Math.min(getUserBonusBalance(), getCartTotalRaw());
+        }
+
+        function spendBonuses(amount) {
+            if (!amount || amount <= 0 || !currentUser) return;
+            const state = getRefState();
+            const profile = state.users[currentUser.id];
+            if (!profile) return;
+            profile.bonus_balance = Math.max(0, Number(profile.bonus_balance || 0) - amount);
+            state.users[currentUser.id] = profile;
+            setRefState(state);
+        }
+
+        function buildReferralLink() {
+            const profile = getCurrentReferralProfile();
+            if (!profile) return "";
+
+            const baseUrl = (MINIAPP_PUBLIC_URL || "").trim();
+            const raw = baseUrl || window.location.href;
+            const url = new URL(raw);
+
+            url.hash = "";
+            url.search = "";
+            url.searchParams.set("ref", profile.code);
+
+            return url.toString();
+        }
+
+        function renderHero() {
+            const root = document.getElementById("hero-block");
+            root.innerHTML = HERO_BANNERS.map((item, index) => `
+                <div class="hero-slide ${index === heroIndex ? "active" : ""}" style="background-image:url('${item.image}'), linear-gradient(135deg, rgba(63,90,105,0.95), rgba(46,69,84,0.85));">
+                    <div class="hero-content">
+                        <div class="hero-title">${item.title}</div>
+                        <div class="hero-text">${item.text}</div>
+                    </div>
+                </div>
+            `).join("") + `
+                <div class="hero-dots">
+                    ${HERO_BANNERS.map((_, index) => `<div class="hero-dot ${index === heroIndex ? "active" : ""}"></div>`).join("")}
+                </div>
+            `;
+        }
+
+        function startHeroRotation() {
+            renderHero();
+            setInterval(() => {
+                heroIndex = (heroIndex + 1) % HERO_BANNERS.length;
+                renderHero();
+            }, 3500);
+        }
+
+        function safeImpact(type = "medium") {
+            try { app?.HapticFeedback?.impactOccurred?.(type, false); } catch (e) {}
+        }
+
+        function safeSelection() {
+            try { app?.HapticFeedback?.selectionChanged?.(false); } catch (e) {}
+        }
+
+        function safeNotify(type = "success") {
+            try { app?.HapticFeedback?.notificationOccurred?.(type, false); } catch (e) {}
+        }
+
+        function showAlert(message) { alert(message); }
+
+        function escapeHTML(str) {
+            return String(str ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function escapeCSV(value) {
+            const str = String(value ?? "");
+            return `"${str.replace(/"/g, '""')}"`;
+        }
+
+        function formatDate(dateString) {
+            const d = new Date(dateString);
+            if (isNaN(d.getTime())) return dateString;
+            return d.toLocaleString("ru-RU", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            });
+        }
+
+        function getUserFromMaxWebApp() {
+            const rawUser = app?.initDataUnsafe?.user || null;
+
+            if (rawUser && rawUser.id) {
+                return {
+                    id: String(rawUser.id),
+                    first_name: rawUser.first_name || "MAX",
+                    last_name: rawUser.last_name || "",
+                    username: rawUser.username || "",
+                    photo_url: rawUser.photo_url || "",
+                    language_code: rawUser.language_code || "ru"
+                };
+            }
+
+            return {
+                id: "guest_local",
+                first_name: "MAX",
+                last_name: "Клиент",
+                username: "guest",
+                photo_url: "",
+                language_code: "ru"
+            };
+        }
+
+        function getUserDisplayName(user) {
+            return [user.first_name, user.last_name].filter(Boolean).join(" ").trim() || "MAX Клиент";
+        }
+
+        function getUserTag(user) {
+            return user.username ? "@" + user.username : "id" + user.id;
+        }
+
+        function getUserStorageKey(userId) {
+            return `max_orders_user_${userId}`;
+        }
+
+        function saveUserProfile(user) {
+            const users = JSON.parse(localStorage.getItem(STORAGE_USERS_KEY)) || {};
+            users[user.id] = {
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                username: user.username,
+                photo_url: user.photo_url,
+                language_code: user.language_code,
+                last_seen_at: new Date().toISOString()
+            };
+            localStorage.setItem(STORAGE_USERS_KEY, JSON.stringify(users));
+        }
+
+        function getAllOrders() {
+            return JSON.parse(localStorage.getItem(STORAGE_ORDERS_KEY)) || [];
+        }
+
+        function setAllOrders(orders) {
+            localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(orders));
+        }
+
+        function getUserOrders(userId) {
+            return JSON.parse(localStorage.getItem(getUserStorageKey(userId))) || [];
+        }
+
+        function setUserOrders(userId, orders) {
+            localStorage.setItem(getUserStorageKey(userId), JSON.stringify(orders));
+        }
+
+        function generateOrderId() {
+            const part1 = Date.now().toString(36).toUpperCase();
+            const part2 = Math.random().toString(36).slice(2, 6).toUpperCase();
+            return `MAX-${part1}-${part2}`;
+        }
+
+        function buildOrdersCSV() {
+            const orders = getAllOrders();
+            const separator = ";";
+
+            const header = [
+                "order_id","created_at","user_id","first_name","last_name","username",
+                "phone","address","item_id","category","item_name","price","qty",
+                "line_total","order_total","status"
+            ];
+
+            const rows = [header.join(separator)];
+
+            orders.forEach(order => {
+                order.items.forEach(item => {
+                    rows.push([
+                        escapeCSV(order.order_id),
+                        escapeCSV(order.created_at),
+                        escapeCSV(order.user.id),
+                        escapeCSV(order.user.first_name),
+                        escapeCSV(order.user.last_name),
+                        escapeCSV(order.user.username),
+                        escapeCSV(order.phone),
+                        escapeCSV(order.address),
+                        escapeCSV(item.id),
+                        escapeCSV(item.cat),
+                        escapeCSV(item.name),
+                        escapeCSV(item.price),
+                        escapeCSV(item.qty),
+                        escapeCSV(item.price * item.qty),
+                        escapeCSV(order.total_before_bonus),
+                        escapeCSV(order.status_text || order.status)
+                    ].join(separator));
+                });
+            });
+
+            return "\uFEFF" + rows.join("\n");
+        }
+
+        function makeCSVBlob(csvContent) {
+            return new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        }
+
+        function downloadCSVFile(csvContent, filename) {
+            const blob = makeCSVBlob(csvContent);
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        }
+
+        async function apiPost(path, payload, isFormData = false) {
+            const options = {
+                method: "POST",
+                headers: {},
+                body: payload
+            };
+
+            if (!isFormData) {
+                options.headers["Content-Type"] = "application/json";
+                options.body = JSON.stringify(payload);
+            }
+
+            const response = await fetch(`${BACKEND_URL}${path}`, options);
+            const rawText = await response.text();
+            let parsed = null;
+
+            if (rawText) {
+                try {
+                    parsed = JSON.parse(rawText);
+                } catch {
+                    parsed = rawText;
+                }
+            }
+
+            if (!response.ok) {
+                throw new Error(typeof parsed === "string" ? parsed : JSON.stringify(parsed));
+            }
+
+            return parsed;
+        }
+
+        function renderProfile() {
+            const user = currentUser;
+            if (!user) return;
+
+            document.getElementById("user-name").innerText = getUserDisplayName(user);
+            document.getElementById("user-id").innerText = getUserTag(user);
+
+            const avatarEl = document.getElementById("avatar");
+            if (user.photo_url) {
+                avatarEl.innerHTML = `<img src="${escapeHTML(user.photo_url)}" alt="avatar">`;
+            } else {
+                avatarEl.textContent = (user.first_name || "?").charAt(0).toUpperCase();
+            }
+
+            document.getElementById("user-status").innerText = "MAX Premium Guest";
+            document.getElementById("user-extra").innerText = "";
+
+            const profile = getCurrentReferralProfile();
+            const link = buildReferralLink();
+            document.getElementById("bonus-balance").innerText = `${Number(profile?.bonus_balance || 0)} ₽`;
+            document.getElementById("ref-code").innerText = profile?.code || "—";
+            document.getElementById("ref-link-box").innerText = link || "—";
+            document.getElementById("ref-invited-count").innerText = Number(profile?.invited_count || 0);
+            document.getElementById("ref-earned-total").innerText = `${Number(profile?.bonus_earned_total || 0)} ₽`;
+        }
+
+        function renderCats() {
+            const cats = ["Все", ...new Set(PRODUCTS.map(p => p.cat))];
+            document.getElementById("cat-nav").innerHTML = cats.map(c => `
+                <div class="cat-btn ${c === currentCat ? "active" : ""}" onclick="setCat('${String(c).replace(/'/g, "\\'")}')">${c}</div>
+            `).join("");
+        }
+
+        function setCat(c) {
+            currentCat = c;
+            renderCats();
+            renderProducts();
+        }
+
+        function renderProductImage(src, altText, cls = "p-img") {
+            return `
+                <div class="p-img-wrap">
+                    <img src="${escapeHTML(src)}" class="${cls}" alt="${escapeHTML(altText)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="p-placeholder" style="display:none;">Добавьте своё фото</div>
+                </div>
+            `;
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById("product-grid");
+            const filtered = currentCat === "Все" ? PRODUCTS : PRODUCTS.filter(p => p.cat === currentCat);
+
+            grid.innerHTML = filtered.map(p => `
+                <div class="card" onclick="openProductModal(${p.id})">
+                    ${renderProductImage(p.image, p.name)}
+                    <div class="p-name serif">${escapeHTML(p.name)}</div>
+                    <div class="p-pack">${escapeHTML(p.pack || "")}</div>
+                    <div class="p-desc">${escapeHTML(p.desc || "")}</div>
+                    <div class="p-price">${p.price} ₽</div>
+                    <button class="add-btn" onclick="event.stopPropagation(); addToCart(${p.id})">В корзину</button>
+                </div>
+            `).join("");
+        }
+
+        function openProductModal(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            if (!p) return;
+            currentProduct = p;
+
+            document.getElementById("modal-img-wrap").innerHTML = `
+                <img src="${escapeHTML(p.image)}" class="modal-img" alt="${escapeHTML(p.name)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="p-placeholder" style="display:none;">Добавьте своё фото</div>
+            `;
+            document.getElementById("modal-title").innerText = p.name;
+            document.getElementById("modal-pack").innerText = p.pack || "";
+            document.getElementById("modal-price").innerText = `${p.price} ₽`;
+            document.getElementById("modal-desc").innerText = p.desc || "";
+            document.getElementById("modal-kbju").innerText = p.kbju || "КБЖУ не указано";
+            document.getElementById("modal-add-btn").onclick = function() {
+                addToCart(p.id);
+                closeProductModal();
+            };
+            document.getElementById("product-modal").classList.add("active");
+        }
+
+        function closeProductModal(event) {
+            if (event && event.target && event.target.id !== "product-modal" && !event.target.classList.contains("modal-close")) return;
+            document.getElementById("product-modal").classList.remove("active");
+        }
+
+        function addToCart(id) {
+            const p = PRODUCTS.find(x => x.id === id);
+            if (!p) return;
+
+            const item = cart.find(x => x.id === id);
+            if (item) item.qty++;
+            else cart.push({ ...p, qty: 1 });
+
+            safeImpact("medium");
+            updateCartUI();
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(x => x.id === id);
+            if (!item) return;
+
+            item.qty += delta;
+            if (item.qty <= 0) cart = cart.filter(x => x.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(cart));
+
+            const list = document.getElementById("cart-list");
+            const count = cart.reduce((s, i) => s + i.qty, 0);
+            const rawTotal = getCartTotalRaw();
+            const bonusToUse = getBonusToUse();
+            const finalTotal = Math.max(0, rawTotal - bonusToUse);
+
+            const badge = document.getElementById("cart-badge");
+            badge.innerText = count;
+            badge.style.display = count > 0 ? "block" : "none";
+
+            const bonusWrap = document.getElementById("bonus-toggle-wrap");
+            const bonusHelp = document.getElementById("bonus-help-text");
+            bonusHelp.innerText = `Доступно ${getUserBonusBalance()} бонусных рублей`;
+            bonusWrap.style.display = rawTotal > 0 && getUserBonusBalance() > 0 ? "block" : "none";
+
+            if (cart.length > 0) {
+                document.getElementById("cart-empty").style.display = "none";
+                document.getElementById("checkout-block").style.display = "block";
+
+                list.innerHTML = cart.map(i => `
+                    <div class="cart-item">
+                        <img src="${escapeHTML(i.image)}" class="cart-img" alt="${escapeHTML(i.name)}" onerror="this.style.display='none'; this.insertAdjacentHTML('afterend', '<div class=&quot;cart-img-placeholder&quot;>Фото</div>');">
+                        <div class="cart-info" style="flex:1;">
+                            <h4 class="serif" style="margin:0 0 6px;">${escapeHTML(i.name)}</h4>
+                            <div style="font-size:11px; opacity:0.7; margin-bottom:4px;">${escapeHTML(i.pack || "")}</div>
+                            <div style="font-weight:600;">${i.price} ₽</div>
+                        </div>
+                        <div class="cart-ctrl">
+                            <button class="qty-btn" onclick="changeQty(${i.id}, -1)">-</button>
+                            <span style="font-weight:600;">${i.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${i.id}, 1)">+</button>
+                        </div>
+                    </div>
+                `).join("");
+
+                list.innerHTML += `
+                    <div class="bonus-box" style="margin-top:8px;">
+                        <div class="bonus-top">
+                            <div>
+                                <div class="bonus-label">Сумма заказа</div>
+                                <div class="bonus-value" style="font-size:22px;">${finalTotal} ₽</div>
+                            </div>
+                            <div style="text-align:right;font-size:12px;line-height:1.5;">
+                                <div>Товары: ${rawTotal} ₽</div>
+                                <div>Бонусы: -${bonusToUse} ₽</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById("cart-empty").style.display = "block";
+                document.getElementById("checkout-block").style.display = "none";
+                list.innerHTML = "";
+                bonusWrap.style.display = "none";
+            }
+        }
+
+        function saveOrderLocally(order) {
+            const userOrders = getUserOrders(order.user.id);
+            userOrders.unshift(order);
+            setUserOrders(order.user.id, userOrders);
+
+            const allOrders = getAllOrders();
+            allOrders.unshift(order);
+            setAllOrders(allOrders);
+        }
+
+        function renderOrderHistory() {
+            if (!currentUser) return;
+            const orders = getUserOrders(currentUser.id);
+            const list = document.getElementById("orders-history-list");
+            const empty = document.getElementById("orders-history-empty");
+
+            if (!orders.length) {
+                empty.style.display = "block";
+                list.innerHTML = "";
+                return;
+            }
+
+            empty.style.display = "none";
+            list.innerHTML = orders.map(order => `
+                <div class="history-card">
+                    <div class="history-top">
+                        <div>
+                            <div class="history-id">${escapeHTML(order.order_id)}</div>
+                            <div class="history-date">${formatDate(order.created_at)}</div>
+                        </div>
+                        <div class="history-total">${order.total_after_bonus} ₽</div>
+                    </div>
+                    <div style="font-size:12px; line-height:1.5;">
+                        ${order.items.map(i => `• ${escapeHTML(i.name)} x ${i.qty}`).join("<br>")}
+                    </div>
+                    <div class="history-status">${escapeHTML(order.status_text || "Отправлен")}</div>
+                </div>
+            `).join("");
+        }
+
+        function buildOrderObject(phone, address) {
+            const rawTotal = getCartTotalRaw();
+            const bonusUsed = getBonusToUse();
+            const totalAfterBonus = Math.max(0, rawTotal - bonusUsed);
+
+            return {
+                order_id: generateOrderId(),
+                created_at: new Date().toISOString(),
+                phone: phone.trim(),
+                address: address.trim(),
+                total: totalAfterBonus,
+                total_before_bonus: rawTotal,
+                bonus_used: bonusUsed,
+                status: "sent_to_admin",
+                status_text: "Отправлен",
+                user: {
+                    id: currentUser.id,
+                    first_name: currentUser.first_name,
+                    last_name: currentUser.last_name,
+                    username: currentUser.username,
+                    photo_url: currentUser.photo_url
+                },
+                referral: {
+                    my_code: getCurrentReferralProfile()?.code || "",
+                    incoming_code: currentReferralCode || ""
+                },
+                items: cart.map(i => ({
+                    id: i.id,
+                    cat: i.cat,
+                    name: i.name,
+                    price: i.price,
+                    qty: i.qty,
+                    image: i.image || "",
+                    pack: i.pack || ""
+                }))
+            };
+        }
+
+        async function finalizeOrder() {
+            const phone = document.getElementById("f-phone").value.trim();
+            const address = document.getElementById("f-address").value.trim();
+
+            if (!phone || !address) {
+                safeNotify("warning");
+                return showAlert("Укажите телефон и адрес для связи");
+            }
+
+            if (!cart.length) {
+                safeNotify("warning");
+                return showAlert("Корзина пуста");
+            }
+
+            const order = buildOrderObject(phone, address);
+
+            try {
+                const result = await apiPost("/api/orders/create", {
+                    order,
+                    initData: app?.initData || "",
+                    initDataUnsafe: app?.initDataUnsafe || null
+                });
+
+                saveOrderLocally(order);
+                spendBonuses(order.bonus_used || 0);
+                applyReferralRewardIfNeeded(order.total_before_bonus || order.total);
+                renderOrderHistory();
+                renderProfile();
+                safeNotify("success");
+
+                cart = [];
+                localStorage.setItem(STORAGE_CART_KEY, JSON.stringify(cart));
+                updateCartUI();
+                switchTab("shop-view", document.querySelector(".nav-item"));
+                showAlert("Заказ успешно оформлен");
+            } catch (e) {
+                console.error("SEND ORDER FAILED:", e);
+                safeNotify("error");
+                showAlert("Заказ не отправлен.\n\n" + e.message);
+            }
+        }
+
+        async function sendCsvToAdmin() {
+            const orders = getAllOrders();
+            if (!orders.length) {
+                return showAlert("Нет данных для выгрузки");
+            }
+
+            try {
+                const csv = buildOrdersCSV();
+                const blob = makeCSVBlob(csv);
+                const filename = `max_orders_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.csv`;
+
+                const formData = new FormData();
+                formData.append("file", blob, filename);
+                formData.append("caption", `CSV выгрузка заказов от ${formatDate(new Date().toISOString())}`);
+
+                await apiPost("/api/orders/export-csv", formData, true);
+                safeNotify("success");
+                showAlert("CSV отправлен администратору");
+            } catch (e) {
+                console.error("SEND CSV FAILED:", e);
+                safeNotify("error");
+                showAlert("CSV не отправлен.\n\n" + e.message);
+            }
+        }
+
+        function exportOrdersCSV() {
+            const orders = getAllOrders();
+            if (!orders.length) {
+                return showAlert("Нет данных для выгрузки");
+            }
+
+            const csv = buildOrdersCSV();
+            const filename = `max_orders_${new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-")}.csv`;
+            downloadCSVFile(csv, filename);
+        }
+
+        async function copyReferralLink() {
+            const link = buildReferralLink();
+            if (!link) return showAlert("Ссылка пока недоступна");
+            try {
+                await navigator.clipboard.writeText(link);
+                safeNotify("success");
+                showAlert("Ссылка скопирована");
+            } catch (e) {
+                showAlert("Не удалось скопировать ссылку");
+            }
+        }
+
+        function shareReferralLink() {
+            const link = buildReferralLink();
+            if (!link) return showAlert("Ссылка пока недоступна");
+            const text = `Присоединяйся к магазину Рыбная Точка. Вот моя реферальная ссылка: ${link}`;
+            if (app?.shareMaxContent) {
+                app.shareMaxContent({ text });
+                return;
+            }
+            if (navigator.share) {
+                navigator.share({ text, url: link }).catch(() => {});
+                return;
+            }
+            copyReferralLink();
+        }
+
+        function switchTab(id, el) {
+            document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+            document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+
+            const target = document.getElementById(id);
+            if (target) target.classList.add("active");
+            if (el) el.classList.add("active");
+
+            if (id === "profile-view") {
+                renderProfile();
+                renderOrderHistory();
+            }
+
+            safeSelection();
+        }
+
+        function preloadCheckoutData() {
+            if (!currentUser) return;
+            const orders = getUserOrders(currentUser.id);
+            if (orders.length) {
+                const lastOrder = orders[0];
+                if (lastOrder.phone) document.getElementById("f-phone").value = lastOrder.phone;
+                if (lastOrder.address) document.getElementById("f-address").value = lastOrder.address;
+            }
+        }
+
+        function init() {
+            currentUser = getUserFromMaxWebApp();
+            saveUserProfile(currentUser);
+            ensureReferralProfile(currentUser);
+            maybeSaveReferralAttribution();
+
+            renderProfile();
+            renderCats();
+            renderProducts();
+            updateCartUI();
+            renderOrderHistory();
+            preloadCheckoutData();
+            startHeroRotation();
+        }
+
+        init();
+    </script>
+</body>
+</html>
